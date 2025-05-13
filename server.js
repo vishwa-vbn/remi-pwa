@@ -118,6 +118,8 @@
 // app.listen(3000, () => {
 //   console.log('Server running on port 3000');
 // });
+
+
 require('dotenv').config();
 const express = require('express');
 const webpush = require('web-push');
@@ -134,6 +136,9 @@ const agent = new https.Agent({
   keepAlive: true,
   timeout: 10000, // 10 seconds
 });
+
+
+console.log("keys",process.env.VAPID_PUBLIC_KEY,process.env.VAPID_PRIVATE_KEY)
 
 // Set VAPID details
 webpush.setVapidDetails(
