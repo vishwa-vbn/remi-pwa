@@ -1,9 +1,8 @@
 import React from "react";
 import { bindActionCreators } from "redux";
-import { connect } from 'react-redux';
-import Header from '../../common/header'
+import { connect } from "react-redux";
+import Header from "../../common/header";
 import BottomNavigation from "../../common/BottomNavigation";
-
 import "./MainLayout.css";
 
 class MainLayout extends React.Component {
@@ -11,18 +10,22 @@ class MainLayout extends React.Component {
 
   render() {
     return (
-      <div className=" w-screen h-screen flex flex-col items-center min-h-screen bg-gray-100">
-        <Header/>
-        <main className="h-screen w-screen overflow-auto scrollbar-hide">
+      <div className="min-h-screen h-screen w-full flex flex-col bg-gray-100">
+        {window.location.pathname !== "/settings" ? (
+          <Header className="flex-none" style={{ height: "10%" }} />
+        ) : null}
+        <main
+          className="flex-grow w-full overflow-auto scrollbar-hide"
+          style={{ height: "80%" }}
+        >
           {this.props.children}
         </main>
-        <BottomNavigation/>
+        <BottomNavigation className="flex-none" style={{ height: "10%" }} />
       </div>
     );
   }
 }
 
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({  }, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({}, dispatch);
 
 export default connect(null, mapDispatchToProps)(MainLayout);
