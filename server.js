@@ -120,55 +120,55 @@
 // });
 
 
-require('dotenv').config();
-const express = require('express');
-const webpush = require('web-push');
-const cors = require('cors');
-const https = require('https');
+// require('dotenv').config();
+// const express = require('express');
+// const webpush = require('web-push');
+// const cors = require('cors');
+// const https = require('https');
 
-const app = express();
+// const app = express();
 
-app.use(cors({ origin: 'http://localhost:5173' }));
-app.use(express.json());
+// app.use(cors({ origin: 'http://localhost:5173' }));
+// app.use(express.json());
 
-// Custom HTTPS agent
-const agent = new https.Agent({
-  keepAlive: true,
-  timeout: 10000, // 10 seconds
-});
+// // Custom HTTPS agent
+// const agent = new https.Agent({
+//   keepAlive: true,
+//   timeout: 10000, // 10 seconds
+// });
 
 
-console.log("keys",process.env.VAPID_PUBLIC_KEY,process.env.VAPID_PRIVATE_KEY)
+// console.log("keys",process.env.VAPID_PUBLIC_KEY,process.env.VAPID_PRIVATE_KEY)
 
-// Set VAPID details
-webpush.setVapidDetails(
-  `mailto:${process.env.VAPID_EMAIL}`,
-  process.env.VAPID_PUBLIC_KEY,
-  process.env.VAPID_PRIVATE_KEY
-);
+// // Set VAPID details
+// webpush.setVapidDetails(
+//   `mailto:${process.env.VAPID_EMAIL}`,
+//   process.env.VAPID_PUBLIC_KEY,
+//   process.env.VAPID_PRIVATE_KEY
+// );
 
-app.post('/api/notify', async (req, res) => {
-  const { subscription } = req.body;
-  console.log('Subscription endpoint:', subscription.endpoint); // Log endpoint
-  if (!subscription) {
-    return res.status(400).send('No subscription provided');
-  }
+// app.post('/api/notify', async (req, res) => {
+//   const { subscription } = req.body;
+//   console.log('Subscription endpoint:', subscription.endpoint); // Log endpoint
+//   if (!subscription) {
+//     return res.status(400).send('No subscription provided');
+//   }
 
-  const payload = {
-    title: 'Test Notification',
-    body: 'This is a test push notification!',
-    data: { url: '/' },
-  };
+//   const payload = {
+//     title: 'Test Notification',
+//     body: 'This is a test push notification!',
+//     data: { url: '/' },
+//   };
 
-  try {
-    await webpush.sendNotification(subscription, JSON.stringify(payload), { agent });
-    res.status(200).send('Notification sent');
-  } catch (error) {
-    console.error('Error sending notification:', error);
-    res.status(500).send('Failed to send notification');
-  }
-});
+//   try {
+//     await webpush.sendNotification(subscription, JSON.stringify(payload), { agent });
+//     res.status(200).send('Notification sent');
+//   } catch (error) {
+//     console.error('Error sending notification:', error);
+//     res.status(500).send('Failed to send notification');
+//   }
+// });
 
-app.listen(3000, () => {
-  console.log('Server running on port 3000');
-});
+// app.listen(3000, () => {
+//   console.log('Server running on port 3000');
+// });

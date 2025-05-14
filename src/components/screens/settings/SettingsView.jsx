@@ -1,10 +1,19 @@
 import React from 'react';
 import { MdExitToApp } from 'react-icons/md';
+import {
+  Box,
+  Typography,
+  Divider,
+  FormControl,
+  Select,
+  MenuItem,
+  Button,
+  Switch,
+  Stack,
+} from '@mui/material';
 
 const SettingsView = ({
   selectedPeriod,
-  open,
-  setOpen,
   setSelectedPeriod,
   notificationsEnabled,
   toggleNotifications,
@@ -12,51 +21,116 @@ const SettingsView = ({
   handleLogout,
 }) => {
   return (
-    <div className="flex flex-col min-h-screen p-6 bg-white">
-      <h1 className="text-2xl font-bold text-gray-900 mb-4">Settings</h1>
-      <hr className="border-gray-300 mb-6" />
+    <Box
+      sx={{
+        p: { xs: 2, sm: 2 },
+        minHeight: '100vh',
+        bgcolor: 'background.paper',
+        fontSize: { xs: '12px', sm: '13px' },
+      }}
+    >
+      <Typography
+        variant="h6"
+        fontWeight={600}
+        gutterBottom
+        sx={{ fontSize: { xs: '1.3rem', sm: '1.3rem' } }}
+      >
+        Settings
+      </Typography>
 
-      <h2 className="text-lg font-medium text-gray-900 mb-3">Data Management</h2>
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-base text-gray-900">Clear Data Older Than</span>
-        <select
-          value={selectedPeriod}
-          onChange={(e) => setSelectedPeriod(e.target.value)}
-          className="border border-gray-900 rounded px-2 py-1 text-sm w-32"
-        >
-          <option value="week">Last Week</option>
-          <option value="month">Last Month</option>
-          <option value="year">Last Year</option>
-        </select>
-      </div>
-      <button
+      <Divider sx={{ mb: 2 }} />
+
+      {/* Data Management */}
+      <Typography
+        variant="subtitle2"
+        fontWeight={600}
+        gutterBottom
+        sx={{ fontSize: { xs: '0.85rem', sm: '0.9rem' } }}
+      >
+        Data Management
+      </Typography>
+
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        spacing={2}
+        sx={{ mb: 1.5 }}
+      >
+        <Typography sx={{ fontSize: '0.8rem' }}>Clear Data Older Than</Typography>
+        <FormControl size="small" sx={{ minWidth: 100 ,maxWidth:150}}>
+          <Select
+            value={selectedPeriod}
+            onChange={(e) => setSelectedPeriod(e.target.value)}
+            sx={{ fontSize: '0.8rem', height: 32 }}
+          >
+            <MenuItem value="week">Last Week</MenuItem>
+            <MenuItem value="month">Last Month</MenuItem>
+            <MenuItem value="year">Last Year</MenuItem>
+          </Select>
+        </FormControl>
+      </Stack>
+
+      <Button
+        variant="outlined"
+        color="primary"
         onClick={handleClearData}
-        className="bg-gray-800 text-white px-4 py-2 rounded border border-gray-900 w-fit hover:bg-gray-700"
+        sx={{
+          fontSize: '0.75rem',
+          px: 2,
+          py: 0.75,
+          mb: 3,
+          textTransform: 'none',
+          minWidth: 'fit-content',
+        }}
       >
         Clear Data
-      </button>
-      <hr className="border-gray-300 my-6" />
+      </Button>
 
-      <h2 className="text-lg font-medium text-gray-900 mb-3">Notifications</h2>
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-base text-gray-900">Enable Notifications</span>
-        <input
-          type="checkbox"
+      <Divider sx={{ mb: 2 }} />
+
+      {/* Notifications */}
+      <Typography
+        variant="subtitle2"
+        fontWeight={600}
+        gutterBottom
+        sx={{ fontSize: { xs: '0.85rem', sm: '0.9rem' } }}
+      >
+        Notifications
+      </Typography>
+
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ mb: 2 }}
+      >
+        <Typography sx={{ fontSize: '0.8rem' }}>Enable Notifications</Typography>
+        <Switch
           checked={notificationsEnabled}
           onChange={(e) => toggleNotifications(e.target.checked)}
-          className="h-5 w-5 text-gray-600"
+          color="primary"
+          size="small"
         />
-      </div>
-      <hr className="border-gray-300 my-6" />
+      </Stack>
 
-      <button
+      <Divider sx={{ my: 2 }} />
+
+      {/* Logout */}
+      <Button
+        variant="text"
         onClick={handleLogout}
-        className="flex items-center text-base font-semibold text-gray-900 hover:text-gray-700"
+        startIcon={<MdExitToApp size={18} />}
+        sx={{
+          fontSize: '0.8rem',
+          fontWeight: 600,
+          textTransform: 'none',
+          color: 'text.primary',
+        }}
       >
-        <MdExitToApp className="mr-2" size={25} />
         Logout
-      </button>
-    </div>
+      </Button>
+    </Box>
   );
 };
 
