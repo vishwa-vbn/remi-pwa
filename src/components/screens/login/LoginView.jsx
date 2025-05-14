@@ -11,7 +11,6 @@ const LoginView = ({ onGoogleSignIn }) => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#eef2f7",
         px: 2,
       }}
     >
