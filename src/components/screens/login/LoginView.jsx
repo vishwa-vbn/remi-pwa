@@ -1,25 +1,109 @@
-import React from 'react';
-import { FcGoogle } from 'react-icons/fc';
+import React from "react";
+import { FcGoogle } from "react-icons/fc";
+import { Box, Button, Typography, Paper } from "@mui/material";
+import logo from "../../../../public/icon-192x192.png";
 
 const LoginView = ({ onGoogleSignIn }) => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-5">
-      
-      <h1 className="text-2xl font-bold text-gray-800 text-center mb-3">
-        Stay Productive, Stay Organized!
-      </h1>
-      <p className="text-lg text-gray-600 text-center mb-8 px-4 leading-6">
-        Your personal assistant to help you remember important tasks throughout
-        the day.
-      </p>
-      <button
-        onClick={onGoogleSignIn}
-        className="flex items-center bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-red-700 transition"
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#eef2f7",
+        px: 2,
+      }}
+    >
+      <Paper
+        elevation={6}
+        sx={{
+          width: "100%",
+          maxWidth: 400,
+          borderRadius: 2,
+          p: 2,
+          backgroundColor: "#ffffff",
+          boxShadow: "0 8px 24px rgba(0, 0, 0, 0.05)",
+          textAlign: "center",
+        }}
       >
-        <FcGoogle size={24} className="mr-2" />
-        <span className="text-lg font-semibold">Sign in with Google</span>
-      </button>
-    </div>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#eef2f7",
+            px: 2,
+            py: 2,
+            gap: 1,
+            mb: 2,
+          }}
+        >
+          <Box
+            component="img"
+            src={logo}
+            alt="App Logo"
+            sx={{
+              width: 100,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: 100,
+              mb: 0,
+              borderRadius: 2,
+            }}
+          />
+
+          <Typography
+            variant="body2"
+            sx={{
+              color: "#6b7280",
+              fontSize: "0.95rem",
+              textAlign: "center",
+            }}
+          >
+            Log in to organize your tasks and boost your efficiency.
+          </Typography>
+        </Box>
+
+        {/* Google Sign In Button */}
+        <Button
+          onClick={onGoogleSignIn}
+          fullWidth
+          variant="outlined"
+          startIcon={<FcGoogle />}
+          sx={{
+            textTransform: "none",
+            fontWeight: 500,
+            borderRadius: 2,
+            borderColor: "#d1d5db",
+            color: "#374151",
+            py: 1.25,
+            fontSize: "1rem",
+            "&:hover": {
+              backgroundColor: "#f3f4f6",
+              borderColor: "#cbd5e1",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+            },
+          }}
+        >
+          Sign in with Google
+        </Button>
+
+        {/* Terms and Conditions Text */}
+        <Typography
+          variant="caption"
+          sx={{
+            mt: 2,
+            display: "block",
+            color: "#9ca3af",
+            fontSize: "0.75rem",
+          }}
+        >
+          By signing in, you agree to our Terms and Conditions.
+        </Typography>
+      </Paper>
+    </Box>
   );
 };
 
