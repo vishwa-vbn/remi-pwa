@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaVolumeUp, FaStopCircle, FaMicrophone, FaTrash } from 'react-icons/fa';
-import { useSpeech } from 'react-text-to-speech';  // <-- import here
 import { GEMINI_KEY } from '../../env';
 
 const VoiceAssistant = () => {
@@ -17,51 +16,9 @@ const VoiceAssistant = () => {
   const recognitionRef = useRef(null);
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
+  const utteranceRef = useRef(null); // track current utterance
 
-  // === react-text-to-speech hook usage ===
-  // Pass the responseText as `text` to useSpeech, but only start when responseText changes.
-  const {
-    start: ttsStart,
-    stop: ttsStop,
-    pause: ttsPause,
-    speechStatus,
-  } = useSpeech({
-    text: responseText,
-    onStart() {
-      // When TTS starts, stop recognition and set processing
-      if (recognitionRef.current && isListening) {
-        recognitionRef.current.abort();
-        setIsListening(false);
-      }
-      setIsProcessing(true);
-    },
-    onEnd() {
-      setIsProcessing(false);
-      setResponseText(''); // clear response text after speaking
-      // Restart recognition after speaking ends
-      if (recognitionRef.current) {
-        try {
-          recognitionRef.current.start();
-          setIsListening(true);
-        } catch (e) {
-          console.warn('Recognition start error:', e);
-        }
-      }
-    },
-    onError(error) {
-      console.error('TTS error:', error);
-      setIsProcessing(false);
-      // Try to restart recognition on error
-      if (recognitionRef.current && !isListening) {
-        try {
-          recognitionRef.current.start();
-          setIsListening(true);
-        } catch {}
-      }
-    },
-  });
-
-  // Clean text helper (unchanged)
+  // Clean text helper
   const cleanResponseText = (text) =>
     text
       .replace(/[*_~`#+=|{}[\]()\\<>^$@!%]/g, '')
@@ -70,7 +27,91 @@ const VoiceAssistant = () => {
       .replace(/(\w)\s*\.\s*(\w)/g, '$1. $2')
       .trim();
 
-  // Remove the old speak function since we now use react-text-to-speech hook
+const speak = async (text) => {
+  if (!text) return;
+  setIsProcessing(true);
+
+  // Cancel any ongoing speech or recognition first
+  window.speechSynthesis.cancel();
+  if (recognitionRef.current && isListening) {
+    recognitionRef.current.abort();
+    setIsListening(false);
+  }
+
+  const waitForVoices = () =>
+    new Promise((resolve) => {
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length) return resolve(voices);
+      window.speechSynthesis.onvoiceschanged = () =>
+        resolve(window.speechSynthesis.getVoices());
+    });
+
+  const voices = await waitForVoices();
+  const utterance = new SpeechSynthesisUtterance(text);
+
+  utterance.voice =
+    voices.find((v) => v.lang === 'en-US' && v.name.includes('Google')) ||
+    voices.find((v) => v.lang === 'en-US');
+  utterance.rate = 1.0;
+  utterance.pitch = 1.0;
+
+  let resumeIntervalId = null;
+
+  utterance.onstart = () => {
+    // Start the periodic resume workaround to prevent speech cut-off
+    resumeIntervalId = setInterval(() => {
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.pause();
+        window.speechSynthesis.resume();
+      } else {
+        clearInterval(resumeIntervalId);
+      }
+    }, 14000);
+
+    // Ensure recognition is stopped while speaking
+    if (recognitionRef.current && isListening) {
+      recognitionRef.current.abort();
+      setIsListening(false);
+    }
+  };
+
+  utterance.onend = () => {
+    // Clear interval once speaking is done
+    if (resumeIntervalId) {
+      clearInterval(resumeIntervalId);
+      resumeIntervalId = null;
+    }
+    setIsProcessing(false);
+    setResponseText('');
+    // Restart recognition for user input
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.start();
+        setIsListening(true);
+      } catch (e) {
+        console.warn('Recognition start error:', e);
+      }
+    }
+  };
+
+  utterance.onerror = (event) => {
+    console.error('SpeechSynthesisUtterance error:', event.error);
+    setIsProcessing(false);
+    if (recognitionRef.current && !isListening) {
+      try {
+        recognitionRef.current.start();
+        setIsListening(true);
+      } catch {}
+    }
+    if (resumeIntervalId) {
+      clearInterval(resumeIntervalId);
+      resumeIntervalId = null;
+    }
+  };
+
+  utteranceRef.current = utterance;
+  window.speechSynthesis.speak(utterance);
+};
 
   // Call Gemini API with conversation history
   const handleGeminiAPI = async (userMessage) => {
@@ -101,16 +142,16 @@ const VoiceAssistant = () => {
       localStorage.setItem('conversationHistory', JSON.stringify(newHistory));
 
       setResponseText(cleaned);
-      ttsStart(); // Start speaking with react-text-to-speech
+      await speak(cleaned);
     } catch (err) {
       console.error('Gemini error:', err);
       const fallback = 'Sorry, an error occurred.';
       setResponseText(fallback);
-      ttsStart();
+      await speak(fallback);
     }
   };
 
-  // Setup speech recognition on mount (unchanged)
+  // Setup speech recognition on mount
   useEffect(() => {
     if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
       console.error('Speech recognition not supported.');
@@ -155,7 +196,7 @@ const VoiceAssistant = () => {
     };
   }, []); // Empty deps to run once
 
-  // AudioContext management - create only when listening or processing, close when not (unchanged)
+  // AudioContext management - create only when listening or processing, close when not
   useEffect(() => {
     if (isListening || isProcessing) {
       if (!audioContextRef.current || audioContextRef.current.state === 'closed') {
@@ -172,10 +213,10 @@ const VoiceAssistant = () => {
     }
   }, [isListening, isProcessing]);
 
-  // Toggle listening with button (manual start/stop) (unchanged except stop TTS on stop)
+  // Toggle listening with button (manual start/stop)
   const toggleListening = () => {
     const recognition = recognitionRef.current;
-    ttsStop(); // stop any ongoing speech
+    window.speechSynthesis.cancel();
 
     if (isListening) {
       recognition.abort();
@@ -193,16 +234,16 @@ const VoiceAssistant = () => {
     }
   };
 
-  // Clear conversation button (unchanged except stop TTS)
+  // Clear conversation button
   const clearConversation = () => {
     setConversationHistory([]);
     localStorage.removeItem('conversationHistory');
-    ttsStop();
+    window.speechSynthesis.cancel();
     setResponseText('');
     setTranscript('');
   };
 
-  // Waveform visualizer remains same (unchanged)
+  // Waveform visualizer remains same
   const WaveformVisualizer = ({ analyser }) => {
     const canvasRef = useRef(null);
 
