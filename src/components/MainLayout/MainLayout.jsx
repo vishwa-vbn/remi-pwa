@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import Header from "../../common/header";
 import BottomNavigation from "../../common/BottomNavigation";
 import "./MainLayout.css";
+import VoiceAssistant from "../../common/VoiceAssistant";
 
 class MainLayout extends React.Component {
   componentDidMount() {}
@@ -11,6 +12,7 @@ class MainLayout extends React.Component {
   render() {
     return (
       <div className="min-h-screen h-screen w-full flex flex-col bg-gray-100">
+        <VoiceAssistant/>
         {window.location.pathname !== "/settings" ? (
           <Header className="flex-none" style={{ height: "10%" }} />
         ) : null}
