@@ -4469,30 +4469,7 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
   };
 
 
-  useEffect(() => {
-  const checkAndRequestMicrophonePermission = async () => {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        stream.getTracks().forEach(track => track.stop()); // Immediately stop the stream
-        console.log("Microphone permission granted.");
-        // Now you can safely start listening
-      } catch (err) {
-        console.error("Error requesting microphone permission:", err);
-        setError("Microphone access was denied.");
-        // Optionally, provide UI to guide the user to device settings
-      }
-    } else {
-      setError("getUserMedia API is not supported in this browser/environment.");
-    }
-  };
-
-  // Check and request permission when the component mounts or when the assistant is opened
-  if (isOpen && !isMicrophoneAvailable) {
-    checkAndRequestMicrophonePermission();
-  }
-}, [isOpen, isMicrophoneAvailable, setError]);
-
+  
   
   
 
