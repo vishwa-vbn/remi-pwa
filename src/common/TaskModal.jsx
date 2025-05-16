@@ -261,7 +261,9 @@ const TaskSheet = ({ visible, onClose, onSubmit, initialData, userId }) => {
                           <Button
                             key={minutes}
                             variant={
-                              alertMinutes === minutes ? "contained" : "outlined"
+                              alertMinutes === minutes
+                                ? "contained"
+                                : "outlined"
                             }
                             onClick={() => setAlertMinutes(minutes)}
                             size="small"

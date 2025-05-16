@@ -1226,7 +1226,7 @@ const CustomTimeline = ({
           if (item.isAd) {
             return (
               <div key={item.id} className="flex justify-center my-2">
-                <AdPlaceholder type="banner" />
+                <AdPlaceholder type="banner"  />
               </div>
             );
           }
@@ -1241,6 +1241,9 @@ const CustomTimeline = ({
           const textColor = isLightColor(backgroundColor)
             ? "#1f2937"
             : "#f9fafb";
+          const iconColor = isLightColor(backgroundColor)
+            ? "#1f2937"
+            : "#f9fafb"; // Added for icons
           const dotColor = isCompleted
             ? "#ADD8E6"
             : isOverdue
@@ -1325,15 +1328,15 @@ const CustomTimeline = ({
                       {item.title}
                     </h3>
                     {!isExpanded && item.description && (
-                      <p className="text-xs text-gray-600 mt-1 truncate">
+                      <p className="text-xs  mt-1 truncate"   style={{ color: textColor }}> 
                         {item.description}
                       </p>
                     )}
                   </div>
                   {isExpanded ? (
-                    <FaChevronUp size={14} color={textColor} />
+                    <FaChevronUp  size={14} color={iconColor} />
                   ) : (
-                    <FaChevronDown size={14} color={textColor} />
+                    <FaChevronDown size={14} color={iconColor} />
                   )}
                 </button>
 
@@ -1349,13 +1352,13 @@ const CustomTimeline = ({
                     >
                       <div className="p-0">
                         {item.description && (
-                          <p className="text-gray-700 break-words text-xs">
+                          <p className="text-gray-700 break-words text-xs" style={{ color: textColor }}>
                             {item.description}
                           </p>
                         )}
                         {item.alertMinutes && (
-                          <div className="flex items-center space-x-2 text-gray-600 text-xs mt-2">
-                            <FaClock size={14} />
+                          <div className="flex items-center space-x-2 text-gray-600 text-xs mt-2"   style={{ color: textColor }}>
+                            <FaClock size={14} color={iconColor} />
                             <span>
                               Alert: {item.alertMinutes} min before at{" "}
                               {new Date(
@@ -1369,8 +1372,9 @@ const CustomTimeline = ({
                           </div>
                         )}
                         {item.note && (
-                          <div className="flex items-start space-x-2 text-gray-600 text-xs mt-2">
+                          <div className="flex items-start space-x-2 text-gray-600 text-xs mt-2"   style={{ color: textColor }}>
                             <FaNoteSticky
+                            color={iconColor}
                               size={14}
                               className="mt-0.5 flex-shrink-0"
                             />
@@ -1384,13 +1388,13 @@ const CustomTimeline = ({
                             onClick={() => handleEdit(item)}
                             className="p-1 hover:bg-gray-100 rounded-full"
                           >
-                            <AiOutlineEdit size={16} />
+                            <AiOutlineEdit size={16} color={iconColor} />
                           </button>
                           <button
                             onClick={() => handleDelete(item.id)}
                             className="p-1 hover:bg-gray-100 rounded-full"
                           >
-                            <MdOutlineDelete size={16} />
+                            <MdOutlineDelete size={16} color={iconColor} />
                           </button>
                         </div>
                       </div>
