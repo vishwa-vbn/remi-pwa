@@ -4360,7 +4360,6 @@
 
 // export default VoiceAssistantSheet;
 
-
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaMicrophone, FaStopCircle, FaCheckCircle } from "react-icons/fa";
@@ -4379,7 +4378,7 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
     description: "",
     note: "",
     timestamp: new Date().getTime(),
-    alert: false,
+    alert: true,
     alertMinutes: 5,
     status: false,
     notified: false,
@@ -4501,7 +4500,7 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
           }
           resetTranscript();
         }
-      }, 14000);
+      }, 3000);
     }
 
     return () => {
@@ -4540,16 +4539,16 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
     console.log("Speech recognition stopped");
   };
 
-const handleMicPress = async (e) => {
-  e.preventDefault();
-  console.log("Microphone pressed");
+  const handleMicPress = async (e) => {
+    e.preventDefault();
+    console.log("Microphone pressed");
 
-  if (permissionGranted === null) {
-    await requestMicPermission(); // Recheck permission in gesture
-  }
+    if (permissionGranted === null) {
+      await requestMicPermission(); // Recheck permission in gesture
+    }
 
-  startListening();
-};
+    startListening();
+  };
 
   const handleMicRelease = (e) => {
     e.preventDefault();
@@ -4679,31 +4678,6 @@ const handleMicPress = async (e) => {
         setError("Invalid time format. Please say a time like '2:30 PM'.");
         await speak("Invalid time format. Please say a time like '2:30 PM'. Hold the microphone button to speak.");
       }
-    } else if (step === "alert") {
-      const lowerInput = input.toLowerCase();
-      if (keywordActions.alertOn.includes(lowerInput)) {
-        setTaskData((prev) => ({ ...prev, alert: true }));
-        await speak("Please choose an alert time: 2, 5, 10, or 15 minutes before the task. Hold the microphone button to speak.");
-        setStep("alertMinutes");
-      } else if (keywordActions.alertOff.includes(lowerInput)) {
-        setTaskData((prev) => ({ ...prev, alert: false, alertMinutes: 0 }));
-        await speak("Alert disabled. Would you like to confirm or change it? Hold the microphone button to speak.");
-        setAwaitingConfirmation(true);
-      } else {
-        setError("Please say 'yes' or 'no' to enable or disable the alert.");
-        await speak("Please say 'yes' or 'no' to enable or disable the alert. Hold the microphone button to speak.");
-      }
-    } else if (step === "alertMinutes") {
-      const validMinutes = [2, 5, 10, 15];
-      const minutes = parseInt(input.match(/\d+/), 10);
-      if (validMinutes.includes(minutes)) {
-        setTaskData((prev) => ({ ...prev, alertMinutes: minutes }));
-        await speak(`Alert set to ${minutes} minutes before. Would you like to confirm or change it? Hold the microphone button to speak.`);
-        setAwaitingConfirmation(true);
-      } else {
-        setError("Please choose 2, 5, 10, or 15 minutes.");
-        await speak("Please choose 2, 5, 10, or 15 minutes. Hold the microphone button to speak.");
-      }
     } else {
       const context =
         step === "title" ? "task title" : step === "description" ? "task description" : "task note";
@@ -4823,9 +4797,6 @@ const handleMicPress = async (e) => {
       setStep("time");
       await speak("Please provide a future task time, like '2:30 PM'. Hold the microphone button to speak.");
     } else if (step === "time") {
-      setStep("alert");
-      await speak("Would you like to enable an alert for this task? Say 'yes' or 'no'. Hold the microphone button to speak.");
-    } else if (step === "alert" || step === "alertMinutes") {
       setStep("confirm");
       await summarizeTask();
     }
@@ -4861,7 +4832,7 @@ const handleMicPress = async (e) => {
       description: "",
       note: "",
       timestamp: new Date().getTime(),
-      alert: false,
+      alert: true,
       alertMinutes: 5,
       status: false,
       notified: false,
@@ -4869,8 +4840,6 @@ const handleMicPress = async (e) => {
     });
     setAiEnhancedOptions([]);
     setUserInput("");
-
-
     setAwaitingConfirmation(false);
     setError("");
     window.speechSynthesis.cancel();
@@ -4944,7 +4913,7 @@ const handleMicPress = async (e) => {
                   gap: 2,
                   alignItems: "center",
                 }}
->
+              >
                 {permissionGranted === false ? (
                   <Typography variant="body2" color="error">
                     Microphone access is required. Please allow permissions in your browser settings.
