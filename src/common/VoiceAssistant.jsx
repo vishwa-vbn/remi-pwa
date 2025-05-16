@@ -4540,11 +4540,16 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
     console.log("Speech recognition stopped");
   };
 
-  const handleMicPress = (e) => {
-    e.preventDefault();
-    console.log("Microphone pressed");
-    startListening();
-  };
+const handleMicPress = async (e) => {
+  e.preventDefault();
+  console.log("Microphone pressed");
+
+  if (permissionGranted === null) {
+    await requestMicPermission(); // Recheck permission in gesture
+  }
+
+  startListening();
+};
 
   const handleMicRelease = (e) => {
     e.preventDefault();
