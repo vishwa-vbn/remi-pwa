@@ -277,12 +277,17 @@ const TaskView = ({
     [setTaskModalVisible]
   );
 
-  const handleSetVoiceAssistantVisible = useCallback(
-    (visible) => {
-      setVoiceAssistantVisible(visible);
-    },
-    []
-  );
+ const handleMicClick = async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    stream.getTracks().forEach(track => track.stop());
+    console.log("Mic access granted.");
+    startListening(); // Start speech recognition after permission
+  } catch (err) {
+    console.error("Permission denied:", err);
+  }
+};
+
 
   const handleChangeDay = useCallback(
     (days) => {
@@ -365,7 +370,7 @@ const TaskView = ({
 
        <motion.button
         className="fixed bottom-4 right-4 p-3 rounded-full shadow-lg bg-blue-600 text-white z-50"
-        onClick={() => setVoiceAssistantVisible(!voiceAssistantVisible)}
+        onClick={() => {handleMicClick(); setVoiceAssistantVisible(!voiceAssistantVisible)}}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         aria-label="Toggle voice assistant"
