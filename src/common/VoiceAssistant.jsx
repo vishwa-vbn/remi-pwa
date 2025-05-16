@@ -4360,6 +4360,7 @@
 
 // export default VoiceAssistantSheet;
 
+
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaMicrophone, FaStopCircle, FaCheckCircle } from "react-icons/fa";
@@ -4372,7 +4373,7 @@ import { sheetVariants, keywordActions, cleanResponseText } from '../utils/index
 
 const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [step, setStep] = useState("title"); // Steps: title, description, note, date, time, alert, alertMinutes, confirm
+  const [step, setStep] = useState("title");
   const [taskData, setTaskData] = useState({
     title: "",
     description: "",
@@ -4388,6 +4389,7 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
   const [userInput, setUserInput] = useState("");
   const [awaitingConfirmation, setAwaitingConfirmation] = useState(false);
   const [error, setError] = useState("");
+  const [permissionGranted, setPermissionGranted] = useState(null);
   const transcriptTimeoutRef = useRef(null);
 
   const {
@@ -4399,9 +4401,21 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
     browserSupportsSpeechRecognition,
     isMicrophoneAvailable,
   } = useSpeechRecognition({
-    commands: [],
     clearTranscriptOnListen: false,
   });
+
+  const requestMicPermission = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(track => track.stop());
+      setPermissionGranted(true);
+      console.log("Microphone permission granted");
+    } catch (err) {
+      console.error("Microphone permission denied:", err);
+      setPermissionGranted(false);
+      setError("Microphone access is required. Please allow microphone permissions.");
+    }
+  };
 
   const speak = (text) => {
     if (!text) return;
@@ -4464,15 +4478,11 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
   };
 
   useEffect(() => {
+    requestMicPermission();
     if (!browserSupportsSpeechRecognition) {
       setError("Speech recognition is not supported in this browser.");
-      return;
     }
-    if (!isMicrophoneAvailable) {
-      setError("Microphone access is required for speech recognition.");
-      return;
-    }
-  }, [browserSupportsSpeechRecognition, isMicrophoneAvailable]);
+  }, [browserSupportsSpeechRecognition]);
 
   useEffect(() => {
     if (finalTranscript && !isProcessing) {
@@ -4501,18 +4511,25 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
     };
   }, [finalTranscript, isProcessing, awaitingConfirmation]);
 
-  const startListening = () => {
-    if (isProcessing || listening || !browserSupportsSpeechRecognition || !isMicrophoneAvailable) {
+  const startListening = async () => {
+    if (isProcessing || listening || !browserSupportsSpeechRecognition || permissionGranted === false) {
       setError(
         !browserSupportsSpeechRecognition
           ? "Speech recognition is not supported."
-          : !isMicrophoneAvailable
-          ? "Microphone access is blocked."
+          : permissionGranted === false
+          ? "Microphone access is blocked. Please allow permissions."
           : "Processing or already listening."
       );
+      console.log("Cannot start listening:", { isProcessing, listening, browserSupportsSpeechRecognition, permissionGranted });
       return;
     }
-    SpeechRecognition.startListening({ continuous: true, language: "en-US", interimResults: true });
+    try {
+      await SpeechRecognition.startListening({ continuous: true, language: "en-US", interimResults: true });
+      console.log("Speech recognition started");
+    } catch (err) {
+      console.error("Error starting speech recognition:", err);
+      setError("Failed to start speech recognition.");
+    }
   };
 
   const stopListening = () => {
@@ -4520,13 +4537,18 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
     if (transcriptTimeoutRef.current) {
       clearTimeout(transcriptTimeoutRef.current);
     }
+    console.log("Speech recognition stopped");
   };
 
-  const handleMicPress = () => {
+  const handleMicPress = (e) => {
+    e.preventDefault();
+    console.log("Microphone pressed");
     startListening();
   };
 
-  const handleMicRelease = () => {
+  const handleMicRelease = (e) => {
+    e.preventDefault();
+    console.log("Microphone released");
     stopListening();
   };
 
@@ -4819,11 +4841,11 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
   };
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && permissionGranted) {
       speak("Please provide the task title. Hold the microphone button to speak.");
     }
     return () => stopListening();
-  }, [isOpen]);
+  }, [isOpen, permissionGranted]);
 
   const resetAndClose = () => {
     setIsOpen(false);
@@ -4842,6 +4864,8 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
     });
     setAiEnhancedOptions([]);
     setUserInput("");
+
+
     setAwaitingConfirmation(false);
     setError("");
     window.speechSynthesis.cancel();
@@ -4915,154 +4939,163 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
                   gap: 2,
                   alignItems: "center",
                 }}
-              >
-                <motion.div
-                  onMouseDown={handleMicPress}
-                  onMouseUp={handleMicRelease}
-                  onTouchStart={handleMicPress}
-                  onTouchEnd={handleMicRelease}
-                  onTouchCancel={handleMicRelease}
-                  style={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: "50%",
-                    backgroundColor: listening ? "#3b82f6" : "#e5e7eb",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    boxShadow: listening ? "0 0 10px rgba(59, 130, 246, 0.5)" : "none",
-                  }}
-                  animate={listening ? { scale: [1, 1.1, 1] } : { scale: 1 }}
-                  transition={listening ? { repeat: Infinity, duration: 0.8 } : {}}
-                >
-                  <FaMicrophone size={24} color={listening ? "#fff" : "#4b5563"} />
-                </motion.div>
-                <Typography variant="body2">
-                  {listening ? "Listening..." : "Hold the microphone to speak"}
-                </Typography>
-
-                {(transcript || interimTranscript) && (
-                  <Typography variant="body2">
-                    You said: {interimTranscript || transcript}
-                  </Typography>
-                )}
-                {aiEnhancedOptions.length > 0 && (
-                  <Box>
-                    <Typography variant="body2">Enhanced Options:</Typography>
-                    {aiEnhancedOptions.map((opt, idx) => (
-                      <Typography key={idx} variant="body2">
-                        {idx + 1}. {opt}
-                      </Typography>
-                    ))}
-                  </Box>
-                )}
-                {error && (
+>
+                {permissionGranted === false ? (
                   <Typography variant="body2" color="error">
-                    {error}
+                    Microphone access is required. Please allow permissions in your browser settings.
                   </Typography>
-                )}
-                {awaitingConfirmation && (
-                  <Box
-                    sx={{ display: "flex", flexDirection: "column", gap: 1, width: "100%" }}
-                  >
-                    <TextField
-                      fullWidth
-                      label={`Edit ${step}`}
-                      value={userInput || aiEnhancedOptions[0] || ""}
-                      onChange={(e) => setUserInput(e.target.value)}
-                      variant="outlined"
-                    />
-                    <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-                      <Button
-                        variant="contained"
-                        onClick={() => handleConfirmation("confirm")}
-                        startIcon={<FaCheckCircle />}
+                ) : (
+                  <>
+                    <motion.div
+                      onMouseDown={handleMicPress}
+                      onMouseUp={handleMicRelease}
+                      onTouchStart={handleMicPress}
+                      onTouchEnd={handleMicRelease}
+                      onTouchCancel={handleMicRelease}
+                      style={{
+                        width: 60,
+                        height: 60,
+                        borderRadius: "50%",
+                        backgroundColor: listening ? "#3b82f6" : "#e5e7eb",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        boxShadow: listening ? "0 0 10px rgba(59, 130, 246, 0.5)" : "none",
+                        touchAction: "none",
+                      }}
+                      animate={listening ? { scale: [1, 1.1, 1] } : { scale: 1 }}
+                      transition={listening ? { repeat: Infinity, duration: 0.8 } : {}}
+                    >
+                      <FaMicrophone size={24} color={listening ? "#fff" : "#4b5563"} />
+                    </motion.div>
+                    <Typography variant="body2">
+                      {listening ? "Listening..." : permissionGranted === null ? "Checking microphone access..." : "Hold the microphone to speak"}
+                    </Typography>
+
+                    {(transcript || interimTranscript) && (
+                      <Typography variant="body2">
+                        You said: {interimTranscript || transcript}
+                      </Typography>
+                    )}
+                    {aiEnhancedOptions.length > 0 && (
+                      <Box>
+                        <Typography variant="body2">Enhanced Options:</Typography>
+                        {aiEnhancedOptions.map((opt, idx) => (
+                          <Typography key={idx} variant="body2">
+                            {idx + 1}. {opt}
+                          </Typography>
+                        ))}
+                      </Box>
+                    )}
+                    {error && (
+                      <Typography variant="body2" color="error">
+                        {error}
+                      </Typography>
+                    )}
+                    {awaitingConfirmation && (
+                      <Box
+                        sx={{ display: "flex", flexDirection: "column", gap: 1, width: "100%" }}
                       >
-                        Confirm
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        onClick={() => handleConfirmation("change")}
-                      >
-                        Change
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        onClick={() => handleConfirmation("enhance")}
-                        disabled={isProcessing}
-                      >
-                        Enhance
-                      </Button>
-                      {aiEnhancedOptions.length > 0 && (
-                        <>
+                        <TextField
+                          fullWidth
+                          label={`Edit ${step}`}
+                          value={userInput || aiEnhancedOptions[0] || ""}
+                          onChange={(e) => setUserInput(e.target.value)}
+                          variant="outlined"
+                        />
+                        <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                           <Button
-                            variant="outlined"
-                            onClick={() => handleConfirmation("select 1")}
+                            variant="contained"
+                            onClick={() => handleConfirmation("confirm")}
+                            startIcon={<FaCheckCircle />}
                           >
-                            Select 1
+                            Confirm
                           </Button>
                           <Button
                             variant="outlined"
-                            onClick={() => handleConfirmation("select 2")}
+                            onClick={() => handleConfirmation("change")}
                           >
-                            Select 2
+                            Change
                           </Button>
                           <Button
                             variant="outlined"
-                            onClick={() => handleConfirmation("select 3")}
+                            onClick={() => handleConfirmation("enhance")}
+                            disabled={isProcessing}
                           >
-                            Select 3
+                            Enhance
                           </Button>
+                          {aiEnhancedOptions.length > 0 && (
+                            <>
+                              <Button
+                                variant="outlined"
+                                onClick={() => handleConfirmation("select 1")}
+                              >
+                                Select 1
+                              </Button>
+                              <Button
+                                variant="outlined"
+                                onClick={() => handleConfirmation("select 2")}
+                              >
+                                Select 2
+                              </Button>
+                              <Button
+                                variant="outlined"
+                                onClick={() => handleConfirmation("select 3")}
+                              >
+                                Select 3
+                              </Button>
+                              <Button
+                                variant="outlined"
+                                onClick={() => handleConfirmation("use original")}
+                              >
+                                Use Original
+                              </Button>
+                            </>
+                          )}
+                          {step === "note" && (
+                            <Button
+                              variant="outlined"
+                              onClick={skipNote}
+                              disabled={isProcessing}
+                            >
+                              Skip
+                            </Button>
+                          )}
                           <Button
                             variant="outlined"
-                            onClick={() => handleConfirmation("use original")}
+                            onClick={resetAndClose}
+                            disabled={isProcessing}
                           >
-                            Use Original
+                            Cancel
                           </Button>
-                        </>
-                      )}
-                      {step === "note" && (
+                        </Box>
+                      </Box>
+                    )}
+                    {isProcessing && <CircularProgress size={24} />}
+                    {isProcessing && (
+                      <Typography variant="body2" sx={{ mt: 1 }}>
+                        Processing...
+                      </Typography>
+                    )}
+                    {step === "confirm" && !awaitingConfirmation && (
+                      <Box sx={{ display: "flex", gap: 1 }}>
+                        <Button
+                          variant="contained"
+                          onClick={() => handleConfirmation("confirm")}
+                          startIcon={<FaCheckCircle />}
+                        >
+                          Save Task
+                        </Button>
                         <Button
                           variant="outlined"
-                          onClick={skipNote}
-                          disabled={isProcessing}
+                          onClick={resetAndClose}
                         >
-                          Skip
+                          Cancel
                         </Button>
-                      )}
-                      <Button
-                        variant="outlined"
-                        onClick={resetAndClose}
-                        disabled={isProcessing}
-                      >
-                        Cancel
-                      </Button>
-                    </Box>
-                  </Box>
-                )}
-                {isProcessing && <CircularProgress size={24} />}
-                {isProcessing && (
-                  <Typography variant="body2" sx={{ mt: 1 }}>
-                    Processing...
-                  </Typography>
-                )}
-                {step === "confirm" && !awaitingConfirmation && (
-                  <Box sx={{ display: "flex", gap: 1 }}>
-                    <Button
-                      variant="contained"
-                      onClick={() => handleConfirmation("confirm")}
-                      startIcon={<FaCheckCircle />}
-                    >
-                      Save Task
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      onClick={resetAndClose}
-                    >
-                      Cancel
-                    </Button>
-                  </Box>
+                      </Box>
+                    )}
+                  </>
                 )}
               </Box>
             </Box>
