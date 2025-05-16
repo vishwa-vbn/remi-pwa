@@ -3777,7 +3777,7 @@ const VoiceAssistantSheet = ({ onSubmit, userId,isOpen, setIsOpen  }) => {
           }
           resetTranscript();
         }
-      }, 3000);
+      }, 14000);
     }
 
     return () => {
