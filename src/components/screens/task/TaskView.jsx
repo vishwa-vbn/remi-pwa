@@ -282,7 +282,6 @@ const TaskView = ({
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     stream.getTracks().forEach(track => track.stop());
     console.log("Mic access granted.");
-    startListening(); // Start speech recognition after permission
   } catch (err) {
     console.error("Permission denied:", err);
   }
