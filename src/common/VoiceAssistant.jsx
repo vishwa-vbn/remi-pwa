@@ -5144,6 +5144,11 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
     }
   };
 
+
+
+
+
+
   const speak = (text) => {
     if (!text) return;
   setIsProcessing(true);
@@ -5152,9 +5157,9 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
   stopListening(); // Fully stop the mic
 
   window.speechSynthesis.cancel(); // Clear any pending utterances
-
     const utterance = new SpeechSynthesisUtterance(text);
     const voices = window.speechSynthesis.getVoices();
+    console.log("voices are",voices)
     // Prioritize Google US English male voice, then other male voices
     utterance.voice =
       voices.find((v) => v.name.includes("Google US English") && v.lang === "en-US") ||
