@@ -5149,6 +5149,8 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
     setIsProcessing(true);
     setIsSpeaking(true);
     window.speechSynthesis.cancel();
+    
+    stopListening()
 
     const utterance = new SpeechSynthesisUtterance(text);
     const voices = window.speechSynthesis.getVoices();
@@ -5164,7 +5166,14 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
     utterance.onend = () => {
       setIsProcessing(false);
       setIsSpeaking(false);
-    };
+
+        setTimeout(() => {
+      if (!listening) {
+        startListening(); // <-- safe to restart mic here
+      }
+    }, 500); // delay gives time for the mic to reset
+  };
+    
 
     utterance.onerror = () => {
       setIsProcessing(false);
