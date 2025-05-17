@@ -5276,7 +5276,7 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
       return;
     }
     try {
-      await SpeechRecognition.startListening({ continuous: true, language: "en-US", interimResults: true });
+      await SpeechRecognition.startListening({ continuous: false, language: "en-US", interimResults: true });
       console.log("Speech recognition started");
     } catch (err) {
       console.error("Error starting speech recognition:", err);
