@@ -5146,11 +5146,12 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
 
   const speak = (text) => {
     if (!text) return;
-    setIsProcessing(true);
-    setIsSpeaking(true);
-    window.speechSynthesis.cancel();
-    
-    stopListening()
+  setIsProcessing(true);
+  setIsSpeaking(true);
+
+  stopListening(); // Fully stop the mic
+
+  window.speechSynthesis.cancel(); // Clear any pending utterances
 
     const utterance = new SpeechSynthesisUtterance(text);
     const voices = window.speechSynthesis.getVoices();
@@ -5167,11 +5168,7 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
       setIsProcessing(false);
       setIsSpeaking(false);
 
-        setTimeout(() => {
-      if (!listening) {
-        startListening(); // <-- safe to restart mic here
-      }
-    }, 500); // delay gives time for the mic to reset
+     
   };
     
 
@@ -5285,6 +5282,15 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
       console.error("Error starting speech recognition:", err);
       setError("Failed to start speech recognition.");
     }
+
+    console.log("Listening state:", {
+  isProcessing,
+  isSpeaking,
+  listening,
+  permissionGranted,
+  browserSupportsSpeechRecognition,
+});
+
   };
 
   const stopListening = () => {
@@ -5293,32 +5299,42 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
     clearTimeout(transcriptTimeoutRef.current);
   }
   console.log("Speech recognition stopped");
+
+  console.log("Listening state:", {
+  isProcessing,
+  isSpeaking,
+  listening,
+  permissionGranted,
+  browserSupportsSpeechRecognition,
+});
+
 };
 
 
-  const handleMicPress = async (e) => {
-    e.preventDefault();
-    console.log("Microphone pressed");
+const handleMicPress = async (e) => {
+  e.preventDefault();
+  console.log("Microphone pressed");
 
-    if (permissionGranted === null && !hasRequestedPermission.current) {
-      await requestMicPermission();
-    }
+  if (permissionGranted === null && !hasRequestedPermission.current) {
+    await requestMicPermission();
+  }
 
-    startListening();
-  };
+  // Don't allow starting mic if system is speaking
+  if (isSpeaking) {
+    console.log("Speech synthesis in progress, mic won't start.");
+    return;
+  }
+
+  startListening();
+};
 
 const handleMicRelease = (e) => {
   e.preventDefault();
   console.log("Microphone released");
 
   stopListening();
-
-  // Add a short delay to ensure mic is fully stopped before speaking
-  setTimeout(() => {
-    // Now you can safely do things like triggering the next prompt
-    // Don't speak immediately in the `onMouseUp` chain
-  }, 500);
 };
+
 
 
   const checkForKeywords = (input) => {
