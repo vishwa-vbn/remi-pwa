@@ -332,6 +332,19 @@ const TaskView = ({
             </button>
           </div>
 
+
+          <motion.button
+        className="p-2 rounded-full shadow-lg bg-gray-800 text-white z-50"
+        onClick={() => {
+           setVoiceAssistantVisible(!voiceAssistantVisible)}}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        aria-label="Toggle voice assistant"
+      >
+        <FaMicrophone size={22} />
+      </motion.button>
+
+
           <div className="flex items-center justify-end ml-2">
             <button
               onClick={() => handleSetTaskModalVisible(true)}
@@ -359,17 +372,7 @@ const TaskView = ({
         />
       </div>
 
-       <motion.button
-        className="fixed bottom-4 right-4 p-3 rounded-full shadow-lg bg-blue-600 text-white z-50"
-        onClick={() => {
-           setVoiceAssistantVisible(!voiceAssistantVisible)}}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        aria-label="Toggle voice assistant"
-      >
-        <FaMicrophone size={24} />
-      </motion.button>
-
+       
       {modalVisible && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-lg w-11/12 max-w-md">

@@ -358,7 +358,6 @@
 
 // export default VoiceAssistant;
 
-
 // import React, { useState, useEffect, useRef } from "react";
 // import { motion, AnimatePresence } from "framer-motion";
 // import {
@@ -789,7 +788,6 @@
 // };
 
 // export default VoiceAssistantSheet;
-
 
 // import React, { useState, useEffect, useRef } from "react";
 // import { motion, AnimatePresence } from "framer-motion";
@@ -1429,8 +1427,6 @@
 // };
 
 // export default VoiceAssistantSheet;
-
-
 
 // import React, { useState, useEffect, useRef } from "react";
 // import { motion, AnimatePresence } from "framer-motion";
@@ -2151,16 +2147,7 @@
 
 // export default VoiceAssistantSheet;
 
-
-
-
-
-
-
-
-
 //below is the final working code with few issues
-
 
 // import React, { useState, useEffect, useRef } from "react";
 // import { motion, AnimatePresence } from "framer-motion";
@@ -2171,8 +2158,6 @@
 // import { Box, Typography, Button, IconButton, TextField, CircularProgress } from "@mui/material";
 // import moment from "moment";
 // import {sheetVariants,keywordActions,cleanResponseText} from '../utils/index';
-
-
 
 // const VoiceAssistantSheet = ({ onSubmit, userId }) => {
 //   const [isOpen, setIsOpen] = useState(false);
@@ -2209,9 +2194,6 @@
 //     commands: [],
 //     clearTranscriptOnListen: false,
 //   });
-
- 
-
 
 //   // Text-to-speech function
 //   const speak = (text, resumeListening = true) => {
@@ -2919,8 +2901,6 @@
 
 // export default VoiceAssistantSheet;
 
-
-
 // import React, { useState, useEffect, useRef } from "react";
 // import { motion, AnimatePresence } from "framer-motion";
 // import { FaMicrophone, FaStopCircle, FaCheckCircle } from "react-icons/fa";
@@ -3451,7 +3431,6 @@
 
 //   return (
 //     <div className="fixed bottom-20 right-2 z-50">
-  
 
 //       <AnimatePresence>
 //         {isOpen && (
@@ -3640,8 +3619,6 @@
 // };
 
 // export default VoiceAssistantSheet;
-
-
 
 // import React, { useState, useEffect, useRef } from "react";
 // import { motion, AnimatePresence } from "framer-motion";
@@ -4170,7 +4147,6 @@
 
 //   return (
 //     <div className="fixed bottom-20 right-2 z-50">
-  
 
 //       <AnimatePresence>
 //         {isOpen && (
@@ -4359,8 +4335,6 @@
 // };
 
 // export default VoiceAssistantSheet;
-
-
 
 // import React, { useState, useEffect, useRef } from "react";
 // import { motion, AnimatePresence } from "framer-motion";
@@ -5084,16 +5058,28 @@
 
 // export default VoiceAssistantSheet;
 
-
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaMicrophone, FaCheckCircle } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 import { GEMINI_KEY } from "../../env";
-import { Box, Typography, Button, IconButton, TextField, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  IconButton,
+  TextField,
+  CircularProgress,
+} from "@mui/material";
 import moment from "moment";
-import { sheetVariants, keywordActions, cleanResponseText } from '../utils/index';
+import {
+  sheetVariants,
+  keywordActions,
+  cleanResponseText,
+} from "../utils/index";
 
 const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -5134,36 +5120,37 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
     hasRequestedPermission.current = true;
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach(track => track.stop());
+      stream.getTracks().forEach((track) => track.stop());
       setPermissionGranted(true);
       console.log("Microphone permission granted");
     } catch (err) {
       console.error("Microphone permission denied:", err);
       setPermissionGranted(false);
-      setError("Microphone access is required. Please allow microphone permissions.");
+      setError(
+        "Microphone access is required. Please allow microphone permissions."
+      );
     }
   };
 
-
-
-
-
-
   const speak = (text) => {
     if (!text) return;
-  setIsProcessing(true);
-  setIsSpeaking(true);
+    setIsProcessing(true);
+    setIsSpeaking(true);
 
-  stopListening(); // Fully stop the mic
+    stopListening(); // Fully stop the mic
 
-  window.speechSynthesis.cancel(); // Clear any pending utterances
+    window.speechSynthesis.cancel(); // Clear any pending utterances
     const utterance = new SpeechSynthesisUtterance(text);
     const voices = window.speechSynthesis.getVoices();
-    console.log("voices are",voices)
+    console.log("voices are", voices);
     // Prioritize Google US English male voice, then other male voices
     utterance.voice =
-      voices.find((v) => v.name.includes("Google US English") && v.lang === "en-US") ||
-      voices.find((v) => v.lang === "en-US" && /male|david|michael|mark/i.test(v.name)) ||
+      voices.find(
+        (v) => v.name.includes("Google US English") && v.lang === "en-US"
+      ) ||
+      voices.find(
+        (v) => v.lang === "en-US" && /male|david|michael|mark/i.test(v.name)
+      ) ||
       voices.find((v) => v.lang === "en-US");
 
     utterance.rate = 1.0;
@@ -5172,10 +5159,7 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
     utterance.onend = () => {
       setIsProcessing(false);
       setIsSpeaking(false);
-
-     
-  };
-    
+    };
 
     utterance.onerror = () => {
       setIsProcessing(false);
@@ -5187,8 +5171,12 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
       window.speechSynthesis.onvoiceschanged = () => {
         const updatedVoices = window.speechSynthesis.getVoices();
         utterance.voice =
-          updatedVoices.find((v) => v.name.includes("Google US English") && v.lang === "en-US") ||
-          updatedVoices.find((v) => v.lang === "en-US" && /male|david|michael|mark/i.test(v.name)) ||
+          updatedVoices.find(
+            (v) => v.name.includes("Google US English") && v.lang === "en-US"
+          ) ||
+          updatedVoices.find(
+            (v) => v.lang === "en-US" && /male|david|michael|mark/i.test(v.name)
+          ) ||
           updatedVoices.find((v) => v.lang === "en-US");
         window.speechSynthesis.speak(utterance);
       };
@@ -5267,7 +5255,13 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
   }, [finalTranscript, isProcessing, awaitingConfirmation, isSpeaking]);
 
   const startListening = async () => {
-    if (isProcessing || listening || !browserSupportsSpeechRecognition || permissionGranted === false || isSpeaking) {
+    if (
+      isProcessing ||
+      listening ||
+      !browserSupportsSpeechRecognition ||
+      permissionGranted === false ||
+      isSpeaking
+    ) {
       setError(
         !browserSupportsSpeechRecognition
           ? "Speech recognition is not supported."
@@ -5277,11 +5271,21 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
           ? "Please wait until the prompt is finished."
           : "Processing or already listening."
       );
-      console.log("Cannot start listening:", { isProcessing, listening, browserSupportsSpeechRecognition, permissionGranted, isSpeaking });
+      console.log("Cannot start listening:", {
+        isProcessing,
+        listening,
+        browserSupportsSpeechRecognition,
+        permissionGranted,
+        isSpeaking,
+      });
       return;
     }
     try {
-      await SpeechRecognition.startListening({ continuous: false, language: "en-US", interimResults: true });
+      await SpeechRecognition.startListening({
+        continuous: false,
+        language: "en-US",
+        interimResults: true,
+      });
       console.log("Speech recognition started");
     } catch (err) {
       console.error("Error starting speech recognition:", err);
@@ -5289,58 +5293,53 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
     }
 
     console.log("Listening state:", {
-  isProcessing,
-  isSpeaking,
-  listening,
-  permissionGranted,
-  browserSupportsSpeechRecognition,
-});
-
+      isProcessing,
+      isSpeaking,
+      listening,
+      permissionGranted,
+      browserSupportsSpeechRecognition,
+    });
   };
 
   const stopListening = () => {
-  SpeechRecognition.stopListening();
-  if (transcriptTimeoutRef.current) {
-    clearTimeout(transcriptTimeoutRef.current);
-  }
-  console.log("Speech recognition stopped");
+    SpeechRecognition.stopListening();
+    if (transcriptTimeoutRef.current) {
+      clearTimeout(transcriptTimeoutRef.current);
+    }
+    console.log("Speech recognition stopped");
 
-  console.log("Listening state:", {
-  isProcessing,
-  isSpeaking,
-  listening,
-  permissionGranted,
-  browserSupportsSpeechRecognition,
-});
+    console.log("Listening state:", {
+      isProcessing,
+      isSpeaking,
+      listening,
+      permissionGranted,
+      browserSupportsSpeechRecognition,
+    });
+  };
 
-};
+  const handleMicPress = async (e) => {
+    e.preventDefault();
+    console.log("Microphone pressed");
 
+    if (permissionGranted === null && !hasRequestedPermission.current) {
+      await requestMicPermission();
+    }
 
-const handleMicPress = async (e) => {
-  e.preventDefault();
-  console.log("Microphone pressed");
+    // Don't allow starting mic if system is speaking
+    if (isSpeaking) {
+      console.log("Speech synthesis in progress, mic won't start.");
+      return;
+    }
 
-  if (permissionGranted === null && !hasRequestedPermission.current) {
-    await requestMicPermission();
-  }
+    startListening();
+  };
 
-  // Don't allow starting mic if system is speaking
-  if (isSpeaking) {
-    console.log("Speech synthesis in progress, mic won't start.");
-    return;
-  }
+  const handleMicRelease = (e) => {
+    e.preventDefault();
+    console.log("Microphone released");
 
-  startListening();
-};
-
-const handleMicRelease = (e) => {
-  e.preventDefault();
-  console.log("Microphone released");
-
-  stopListening();
-};
-
-
+    stopListening();
+  };
 
   const checkForKeywords = (input) => {
     const lowerInput = input.toLowerCase();
@@ -5369,7 +5368,9 @@ const handleMicRelease = (e) => {
           }
           return;
         case "change":
-          await speak(`Please provide the ${step} again. Hold the microphone button to speak.`);
+          await speak(
+            `Please provide the ${step} again. Hold the microphone button to speak.`
+          );
           setUserInput("");
           setAiEnhancedOptions([]);
           setAwaitingConfirmation(false);
@@ -5389,13 +5390,17 @@ const handleMicRelease = (e) => {
               return;
             }
           }
-          await speak("Invalid selection. Please say 'select one', 'select two', or 'select three'. Hold the microphone button to speak.");
+          await speak(
+            "Invalid selection. Please say 'select one', 'select two', or 'select three'. Hold the microphone button to speak."
+          );
           return;
         case "skip":
           if (step === "note") {
             skipNote();
           } else {
-            await speak("Skip is only available for notes. Please provide the current input. Hold the microphone button to speak.");
+            await speak(
+              "Skip is only available for notes. Please provide the current input. Hold the microphone button to speak."
+            );
           }
           return;
         case "cancel":
@@ -5409,9 +5414,19 @@ const handleMicRelease = (e) => {
     if (step === "date") {
       const normalizedInput = input.replace(/\s+/g, " ").trim();
       const dateFormats = [
-        "MMMM D YYYY", "MMMM D, YYYY", "MM/DD/YYYY", "MM-DD-YYYY", "YYYY-MM-DD",
-        "MMM D YYYY", "MMM D, YYYY", "D MMMM YYYY", "D MMM YYYY",
-        "MMMM YYYY", "MMM YYYY", "YYYY MMMM", "YYYY MMM",
+        "MMMM D YYYY",
+        "MMMM D, YYYY",
+        "MM/DD/YYYY",
+        "MM-DD-YYYY",
+        "YYYY-MM-DD",
+        "MMM D YYYY",
+        "MMM D, YYYY",
+        "D MMMM YYYY",
+        "D MMM YYYY",
+        "MMMM YYYY",
+        "MMM YYYY",
+        "YYYY MMMM",
+        "YYYY MMM",
       ];
       let parsedDate = moment(normalizedInput, dateFormats, false);
       if (!parsedDate.isValid()) {
@@ -5431,15 +5446,25 @@ const handleMicRelease = (e) => {
               parsedDate.date()
             ),
           }));
-          await speak(`Date set to ${parsedDate.format("MMMM D, YYYY")}. Would you like to confirm, change, or enhance it? Hold the microphone button to speak.`);
+          await speak(
+            `Date set to ${parsedDate.format(
+              "MMMM D, YYYY"
+            )}. Would you like to confirm, change, or enhance it? Hold the microphone button to speak.`
+          );
           setAwaitingConfirmation(true);
         } else {
           setError("Please select a future date, like 'May 1, 2025'.");
-          await speak("Please select a future date, like 'May 1, 2025'. Hold the microphone button to speak.");
+          await speak(
+            "Please select a future date, like 'May 1, 2025'. Hold the microphone button to speak."
+          );
         }
       } else {
-        setError("Invalid date format. Please say a date like 'May 1, 2025' or 'January 2026'.");
-        await speak("Invalid date format. Please say a date like 'May 1, 2025' or 'January 2026'. Hold the microphone button to speak.");
+        setError(
+          "Invalid date format. Please say a date like 'May 1, 2025' or 'January 2026'."
+        );
+        await speak(
+          "Invalid date format. Please say a date like 'May 1, 2025' or 'January 2026'. Hold the microphone button to speak."
+        );
       }
     } else if (step === "time") {
       const parsedTime = moment(input, ["h:mm A", "HH:mm"], true);
@@ -5454,28 +5479,46 @@ const handleMicRelease = (e) => {
             ...prev,
             timestamp: combinedDateTime.valueOf(),
           }));
-          await speak(`Time set to ${parsedTime.format("h:mm A")}. Would you like to confirm, change, or enhance it? Hold the microphone button to speak.`);
+          await speak(
+            `Time set to ${parsedTime.format(
+              "h:mm A"
+            )}. Would you like to confirm, change, or enhance it? Hold the microphone button to speak.`
+          );
           setAwaitingConfirmation(true);
         } else {
           setError("Please select a future time.");
-          await speak("Please select a future time. Hold the microphone button to speak.");
+          await speak(
+            "Please select a future time. Hold the microphone button to speak."
+          );
         }
       } else {
         setError("Invalid time format. Please say a time like '2:30 PM'.");
-        await speak("Invalid time format. Please say a time like '2:30 PM'. Hold the microphone button to speak.");
+        await speak(
+          "Invalid time format. Please say a time like '2:30 PM'. Hold the microphone button to speak."
+        );
       }
     } else {
       const context =
-        step === "title" ? "task title" : step === "description" ? "task description" : "task note";
+        step === "title"
+          ? "task title"
+          : step === "description"
+          ? "task description"
+          : "task note";
       setUserInput(input);
-      await speak(`You said: ${input}. Would you like to confirm, change, or enhance this ${context}? Hold the microphone button to speak.`);
+      await speak(
+        `You said: ${input}. Would you like to confirm, change, or enhance this ${context}? Hold the microphone button to speak.`
+      );
       setAwaitingConfirmation(true);
     }
   };
 
   const handleEnhance = async () => {
     const context =
-      step === "title" ? "task title" : step === "description" ? "task description" : "task note";
+      step === "title"
+        ? "task title"
+        : step === "description"
+        ? "task description"
+        : "task note";
     const options = await enhanceText(userInput, context);
     setAiEnhancedOptions(options);
     await speak(
@@ -5498,7 +5541,9 @@ const handleMicRelease = (e) => {
           }
           return;
         case "change":
-          await speak(`Please provide the ${step} again. Hold the microphone button to speak.`);
+          await speak(
+            `Please provide the ${step} again. Hold the microphone button to speak.`
+          );
           setUserInput("");
           setAiEnhancedOptions([]);
           setAwaitingConfirmation(false);
@@ -5518,13 +5563,17 @@ const handleMicRelease = (e) => {
               return;
             }
           }
-          await speak("Invalid selection. Please say 'select one', 'select two', or 'select three'. Hold the microphone button to speak.");
+          await speak(
+            "Invalid selection. Please say 'select one', 'select two', or 'select three'. Hold the microphone button to speak."
+          );
           return;
         case "skip":
           if (step === "note") {
             skipNote();
           } else {
-            await speak("Skip is only available for notes. Please provide the current input. Hold the microphone button to speak.");
+            await speak(
+              "Skip is only available for notes. Please provide the current input. Hold the microphone button to speak."
+            );
           }
           return;
         case "cancel":
@@ -5543,7 +5592,7 @@ const handleMicRelease = (e) => {
   };
 
   const handleFinalSubmit = () => {
-    if (!onSubmit || typeof onSubmit !== 'function') {
+    if (!onSubmit || typeof onSubmit !== "function") {
       console.error("onSubmit is not a function or is undefined");
       return;
     }
@@ -5572,16 +5621,24 @@ const handleMicRelease = (e) => {
   const moveToNextStep = async () => {
     if (step === "title") {
       setStep("description");
-      await speak("Please provide the task description. Hold the microphone button to speak.");
+      await speak(
+        "Please provide the task description. Hold the microphone button to speak."
+      );
     } else if (step === "description") {
       setStep("note");
-      await speak("Please provide any additional notes, or say 'skip' to proceed. Hold the microphone button to speak.");
+      await speak(
+        "Please provide any additional notes, or say 'skip' to proceed. Hold the microphone button to speak."
+      );
     } else if (step === "note") {
       setStep("date");
-      await speak("Please provide a future task date, like 'January 1, 2026'. Hold the microphone button to speak.");
+      await speak(
+        "Please provide a future task date, like 'January 1, 2026'. Hold the microphone button to speak."
+      );
     } else if (step === "date") {
       setStep("time");
-      await speak("Please provide a future task time, like '2:30 PM'. Hold the microphone button to speak.");
+      await speak(
+        "Please provide a future task time, like '2:30 PM'. Hold the microphone button to speak."
+      );
     } else if (step === "time") {
       setStep("confirm");
       await summarizeTask();
@@ -5589,7 +5646,9 @@ const handleMicRelease = (e) => {
   };
 
   const summarizeTask = async () => {
-    const dateTime = moment(taskData.timestamp).format("MMMM D, YYYY [at] h:mm A");
+    const dateTime = moment(taskData.timestamp).format(
+      "MMMM D, YYYY [at] h:mm A"
+    );
     const alertText = taskData.alert
       ? `Alert set for ${taskData.alertMinutes} minutes before.`
       : "No alert set.";
@@ -5604,7 +5663,9 @@ const handleMicRelease = (e) => {
 
   useEffect(() => {
     if (isOpen && permissionGranted) {
-      speak("Please provide the task title. Hold the microphone button to speak.");
+      speak(
+        "Please provide the task title. Hold the microphone button to speak."
+      );
     }
     return () => stopListening();
   }, [isOpen, permissionGranted]);
@@ -5640,7 +5701,9 @@ const handleMicRelease = (e) => {
     setAwaitingConfirmation(false);
     setUserInput("");
     setAiEnhancedOptions([]);
-    speak("Please provide a future task date, like 'January 1, 2026'. Hold the microphone button to speak.");
+    speak(
+      "Please provide a future task date, like 'January 1, 2026'. Hold the microphone button to speak."
+    );
   };
 
   return (
@@ -5703,17 +5766,18 @@ const handleMicRelease = (e) => {
               >
                 {permissionGranted === false ? (
                   <Typography variant="body2" color="error">
-                    Microphone access is required. Please allow permissions in your browser settings.
+                    Microphone access is required. Please allow permissions in
+                    your browser settings.
                   </Typography>
                 ) : (
                   <>
                     <motion.div
-                       onMouseDown={handleMicPress}
-  onTouchStart={handleMicPress}
-  onMouseUp={handleMicRelease}
-  onMouseMove={handleMicRelease}
-  onMouseLeave={handleMicRelease}
-  onTouchEnd={handleMicRelease}
+                      onMouseDown={handleMicPress}
+                      onTouchStart={handleMicPress}
+                      onMouseUp={handleMicRelease}
+                      onMouseMove={handleMicRelease}
+                      onMouseLeave={handleMicRelease}
+                      onTouchEnd={handleMicRelease}
                       style={{
                         width: 60,
                         height: 60,
@@ -5723,16 +5787,29 @@ const handleMicRelease = (e) => {
                         alignItems: "center",
                         justifyContent: "center",
                         cursor: "pointer",
-                        boxShadow: listening ? "0 0 10px rgba(59, 130, 246, 0.5)" : "none",
+                        boxShadow: listening
+                          ? "0 0 10px rgba(59, 130, 246, 0.5)"
+                          : "none",
                         touchAction: "none",
                       }}
-                      animate={listening ? { scale: [1, 1.1, 1] } : { scale: 1 }}
-                      transition={listening ? { repeat: Infinity, duration: 0.8 } : {}}
+                      animate={
+                        listening ? { scale: [1, 1.1, 1] } : { scale: 1 }
+                      }
+                      transition={
+                        listening ? { repeat: Infinity, duration: 0.8 } : {}
+                      }
                     >
-                      <FaMicrophone size={24} color={listening ? "#fff" : "#4b5563"} />
+                      <FaMicrophone
+                        size={24}
+                        color={listening ? "#fff" : "#4b5563"}
+                      />
                     </motion.div>
                     <Typography variant="body2">
-                      {listening ? "Listening..." : permissionGranted === null ? "Checking microphone access..." : "Hold the microphone to speak"}
+                      {listening
+                        ? "Listening..."
+                        : permissionGranted === null
+                        ? "Checking microphone access..."
+                        : "Hold the microphone to speak"}
                     </Typography>
 
                     {(transcript || interimTranscript) && (
@@ -5742,7 +5819,9 @@ const handleMicRelease = (e) => {
                     )}
                     {aiEnhancedOptions.length > 0 && (
                       <Box>
-                        <Typography variant="body2">Enhanced Options:</Typography>
+                        <Typography variant="body2">
+                          Enhanced Options:
+                        </Typography>
                         {aiEnhancedOptions.map((opt, idx) => (
                           <Typography key={idx} variant="body2">
                             {idx + 1}. {opt}
@@ -5757,7 +5836,12 @@ const handleMicRelease = (e) => {
                     )}
                     {awaitingConfirmation && (
                       <Box
-                        sx={{ display: "flex", flexDirection: "column", gap: 1, width: "100%" }}
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 1,
+                          width: "100%",
+                        }}
                       >
                         <TextField
                           fullWidth
@@ -5809,7 +5893,9 @@ const handleMicRelease = (e) => {
                               </Button>
                               <Button
                                 variant="outlined"
-                                onClick={() => handleConfirmation("use original")}
+                                onClick={() =>
+                                  handleConfirmation("use original")
+                                }
                               >
                                 Use Original
                               </Button>
@@ -5849,10 +5935,7 @@ const handleMicRelease = (e) => {
                         >
                           Save Task
                         </Button>
-                        <Button
-                          variant="outlined"
-                          onClick={resetAndClose}
-                        >
+                        <Button variant="outlined" onClick={resetAndClose}>
                           Cancel
                         </Button>
                       </Box>
