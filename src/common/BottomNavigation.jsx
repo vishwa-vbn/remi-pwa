@@ -1,13 +1,13 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { IoIosHome, IoIosSettings } from 'react-icons/io';
+import { IoChatboxEllipses } from "react-icons/io5";
 import { BottomNavigation, BottomNavigationAction } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 const StyledBottomNavigation = styled(BottomNavigation)(({ theme }) => ({
   width: '100vw', // Full viewport width
   maxWidth: '100%', // Prevent overflow
-  position: 'fixed', // Stick to bottom
   bottom: 0,
   left: 0,
   right: 0,
@@ -15,10 +15,11 @@ const StyledBottomNavigation = styled(BottomNavigation)(({ theme }) => ({
   borderTop: `1px solid ${theme.palette.grey[200]}`,
   boxShadow: theme.shadows[4],
   paddingBottom: 'env(safe-area-inset-bottom)',
-  height: 'auto',
+  height: '5%', // Set to 10% of viewport height
   display: 'flex', // Flexbox for centering
   justifyContent: 'space-evenly', // Evenly space actions
   boxSizing: 'border-box', // Include padding/borders in width
+  alignItems: 'center', // Vertically center content
 }));
 
 const StyledBottomNavigationAction = styled(BottomNavigationAction)(({ theme }) => ({
@@ -48,6 +49,11 @@ const BottomNavigationComponent = ({ className }) => {
         icon={<IoIosHome size={20} />}
         component={NavLink}
         to="/tasks"
+      />
+      <StyledBottomNavigationAction
+        icon={<IoChatboxEllipses size={20} />}
+        component={NavLink}
+        to="/chat"
       />
       <StyledBottomNavigationAction
         icon={<IoIosSettings size={20} />}
