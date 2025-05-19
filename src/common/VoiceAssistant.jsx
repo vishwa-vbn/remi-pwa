@@ -570,7 +570,7 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
   };
 
   return (
-    <div className="fixed bottom-20 right-2 z-50">
+    <div className="fixed bottom-10 right-2 z-50">
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -582,7 +582,7 @@ const VoiceAssistantSheet = ({ onSubmit, userId, isOpen, setIsOpen }) => {
               width: "100%",
               maxWidth: "600px",
               position: "fixed",
-              bottom: 0,
+              bottom: "50px",
               right: 0,
               left: 0,
               margin: "auto",
