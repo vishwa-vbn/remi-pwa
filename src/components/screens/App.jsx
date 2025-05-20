@@ -4,7 +4,6 @@ import RestrictedRoute from '../restricted/index';
 import LoginContainer from '../screens/login/LoginContainer.jsx';
 import SettingsContainer from '../screens/settings/SettingsContainer.jsx';
 import TaskContainer from './task/TaskContainer.jsx';
-import ChatContainer from './chat/chatContainer.jsx';
 
 function App({ match }) {
     console.log("match is", match);
@@ -17,11 +16,8 @@ function App({ match }) {
         {
             component: TaskContainer,
             link: 'tasks',
-        },
-        {
-            component:ChatContainer,
-            link: 'chat',
         }
+      
     ];
 
     const login_routes = [
