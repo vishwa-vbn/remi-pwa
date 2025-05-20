@@ -7,7 +7,6 @@ import { styled } from "@mui/material/styles";
 // Styled Components
 const StyledBottomNavigation = styled(BottomNavigation)(({ theme }) => ({
   width: "100vw",
-  position: "fixed",
   bottom: 0,
   backgroundColor: theme.palette.background.paper,
   borderTop: `1px solid ${theme.palette.grey[200]}`,
