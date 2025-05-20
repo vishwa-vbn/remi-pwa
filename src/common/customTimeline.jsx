@@ -111,26 +111,26 @@ const CustomTimeline = ({
     setIsAtBottom(isUserAtBottom);
   }, []);
 
-const scrollToBottom = useCallback(() => {
-  if (scrollContainerRef.current) {
-    // Find the last task (excluding ads)
-    const lastTask = sortedTasksWithAds
-      .filter((item) => !item.isAd)
-      .slice(-1)[0];
-    if (lastTask) {
-      const lastTaskElement = document.getElementById(`task-${lastTask.id}`);
-      if (lastTaskElement) {
-        lastTaskElement.scrollIntoView({ behavior: "smooth", block: "end" });
-      } else {
-        scrollContainerRef.current.scrollTo({
-          top: scrollContainerRef.current.scrollHeight,
-          behavior: "smooth",
-        });
+  const scrollToBottom = useCallback(() => {
+    if (scrollContainerRef.current) {
+      // Find the last task (excluding ads)
+      const lastTask = sortedTasksWithAds
+        .filter((item) => !item.isAd)
+        .slice(-1)[0];
+      if (lastTask) {
+        const lastTaskElement = document.getElementById(`task-${lastTask.id}`);
+        if (lastTaskElement) {
+          lastTaskElement.scrollIntoView({ behavior: "smooth", block: "end" });
+        } else {
+          scrollContainerRef.current.scrollTo({
+            top: scrollContainerRef.current.scrollHeight,
+            behavior: "smooth",
+          });
+        }
       }
+      setIsAtBottom(true);
     }
-    setIsAtBottom(true);
-  }
-}, [sortedTasksWithAds]);
+  }, [sortedTasksWithAds]);
 
   useEffect(() => {
     const calculateLineHeights = () => {
@@ -174,48 +174,49 @@ const scrollToBottom = useCallback(() => {
   }, [sortedTasksWithAds, expandedTasks]);
 
   useEffect(() => {
-  const calculateLineHeights = () => {
-    const heights = {};
-    sortedTasksWithAds.forEach((item, index) => {
-      if (item.isAd) {
-        heights[item.id] = 120; // Fixed height for ads
-        return;
-      }
-      if (index === sortedTasksWithAds.length - 1) {
-        heights[item.id] = 0; // No line after the last task
-        return;
-      }
-      const currentDot = dotRefs.current[item.id];
-      const nextItem = sortedTasksWithAds[index + 1];
-      // Only calculate height to next task, skipping ads
-      const nextTaskIndex = sortedTasksWithAds.findIndex(
-        (t, i) => i > index && !t.isAd
-      );
-      const nextDot =
-        nextTaskIndex !== -1
-          ? dotRefs.current[sortedTasksWithAds[nextTaskIndex]?.id]
-          : null;
-      if (currentDot && nextDot && !nextItem.isAd) {
-        const currentDotRect = currentDot.getBoundingClientRect();
-        const nextDotRect = nextDot.getBoundingClientRect();
-        const currentDotCenter = currentDotRect.top + currentDotRect.height / 2;
-        const nextDotCenter = nextDotRect.top + nextDotRect.height / 2;
-        const distance = Math.max(nextDotCenter - currentDotCenter, 0);
-        heights[item.id] = distance;
-      } else {
-        heights[item.id] = expandedTasks[item.id] ? 180 : 80; // Default height
-      }
-    });
-    setLineHeights(heights);
-  };
+    const calculateLineHeights = () => {
+      const heights = {};
+      sortedTasksWithAds.forEach((item, index) => {
+        if (item.isAd) {
+          heights[item.id] = 120; // Fixed height for ads
+          return;
+        }
+        if (index === sortedTasksWithAds.length - 1) {
+          heights[item.id] = 0; // No line after the last task
+          return;
+        }
+        const currentDot = dotRefs.current[item.id];
+        const nextItem = sortedTasksWithAds[index + 1];
+        // Only calculate height to next task, skipping ads
+        const nextTaskIndex = sortedTasksWithAds.findIndex(
+          (t, i) => i > index && !t.isAd
+        );
+        const nextDot =
+          nextTaskIndex !== -1
+            ? dotRefs.current[sortedTasksWithAds[nextTaskIndex]?.id]
+            : null;
+        if (currentDot && nextDot && !nextItem.isAd) {
+          const currentDotRect = currentDot.getBoundingClientRect();
+          const nextDotRect = nextDot.getBoundingClientRect();
+          const currentDotCenter =
+            currentDotRect.top + currentDotRect.height / 2;
+          const nextDotCenter = nextDotRect.top + nextDotRect.height / 2;
+          const distance = Math.max(nextDotCenter - currentDotCenter, 0);
+          heights[item.id] = distance;
+        } else {
+          heights[item.id] = expandedTasks[item.id] ? 180 : 80; // Default height
+        }
+      });
+      setLineHeights(heights);
+    };
 
-  calculateLineHeights();
-  const observer = new ResizeObserver(calculateLineHeights);
-  if (scrollContainerRef.current) {
-    observer.observe(scrollContainerRef.current);
-  }
-  return () => observer.disconnect();
-}, [sortedTasksWithAds, expandedTasks]);
+    calculateLineHeights();
+    const observer = new ResizeObserver(calculateLineHeights);
+    if (scrollContainerRef.current) {
+      observer.observe(scrollContainerRef.current);
+    }
+    return () => observer.disconnect();
+  }, [sortedTasksWithAds, expandedTasks]);
 
   return (
     <div className="flex-1 bg-white relative h-full overflow-hidden w-full">
@@ -242,11 +243,11 @@ const scrollToBottom = useCallback(() => {
         </div>
       )}
 
-     <div
-  ref={scrollContainerRef}
-  className="max-h-[calc(100vh-180px)] overflow-y-auto px-3 py-4 space-y-2 w-full scrollbar-hide pb-16" // Added pb-16
-  onScroll={handleScroll}
->
+      <div
+        ref={scrollContainerRef}
+        className="max-h-[calc(100vh-180px)] overflow-y-auto px-3 py-4 space-y-2 w-full scrollbar-hide pb-16" // Added pb-16
+        onScroll={handleScroll}
+      >
         {sortedTasksWithAds.map((item, index) => {
           if (item.isAd) {
             return (
@@ -280,7 +281,7 @@ const scrollToBottom = useCallback(() => {
             ? "#d1d5db"
             : "#ffffff";
           const timelineColor = isCompleted
-            ? "#E0FFFF"
+            ? "#ADD8E6"
             : isOverdue
             ? "#d1d5db"
             : "#6b7280";
@@ -387,16 +388,21 @@ const scrollToBottom = useCallback(() => {
                             {item.description}
                           </p>
                         )}
-                        {item.alertMinutes && (
+                        {item.alert && (
                           <div
                             className="flex items-center space-x-2 text-gray-600 text-xs mt-2"
                             style={{ color: textColor }}
                           >
                             <FaClock size={14} color={iconColor} />
                             <span>
-                              Alert: {item.alertMinutes} min before at{" "}
+                              Alert:{" "}
+                              {item.alertMinutes === 0
+                                ? "at"
+                                : `${item.alertMinutes} min before at`}{" "}
                               {new Date(
-                                item.timestamp - item.alertMinutes * 60000
+                                item.alertMinutes === 0
+                                  ? item.timestamp
+                                  : item.timestamp - item.alertMinutes * 60000
                               ).toLocaleTimeString([], {
                                 hour: "2-digit",
                                 minute: "2-digit",
