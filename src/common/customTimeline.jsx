@@ -449,13 +449,12 @@ const CustomTimeline = ({
           );
         })}
       </div>
-
-      <button
-        onClick={scrollToBottom}
-        className="absolute bottom-5 right-2 bg-gray-300 hover:bg-gray-400 p-2 rounded-full shadow-md"
-      >
-        <MdExpandCircleDown size={20} />
-      </button>
+<button
+  onClick={scrollToBottom}
+  className="fixed bottom-[calc(6%+env(safe-area-inset-bottom)+0.5rem)] right-4 bg-gray-300 hover:bg-gray-400 p-2 rounded-full shadow-md z-[1100]"
+>
+  <MdExpandCircleDown size={20} />
+</button>
     </div>
   );
 };
