@@ -302,7 +302,7 @@ const TaskView = ({
   );
 
   return (
-    <div className="flex flex-col h-full w-full bg-white">
+    <div className="flex flex-col h-[100%] w-full bg-white">
       <div className="sticky top-0 z-10 mx-3 sm:mx-3">
         <div className="flex items-center justify-between bg-gray-50 rounded-full shadow-sm border-gray-200 px-2 py-2">
           <div className="flex items-center flex-grow space-x-4">
