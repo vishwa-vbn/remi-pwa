@@ -13,7 +13,7 @@ const StyledBottomNavigation = styled(BottomNavigation)(({ theme }) => ({
   borderTop: `1px solid ${theme.palette.grey[200]}`,
   boxShadow: theme.shadows[4],
   paddingBottom: "env(safe-area-inset-bottom)",
-  height: "56px",
+  height: "6%",
   display: "flex",
   justifyContent: "space-evenly",
   alignItems: "center",

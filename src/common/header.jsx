@@ -21,7 +21,7 @@ const CustomHeader = ({ className }) => {
 
   return (
     <div
-      className={`w-full bg-white py-4 px-4 sm:px-6  flex flex-col justify-center ${className}`}
+      className={`w-full bg-white py-4 px-4 sm:px-6  h-[10%] flex flex-col justify-center ${className}`}
       style={{
         
       }}
