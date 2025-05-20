@@ -7,13 +7,13 @@ import { styled } from "@mui/material/styles";
 // Styled Components
 const StyledBottomNavigation = styled(BottomNavigation)(({ theme }) => ({
   width: "100vw",
-  position: "fixed",
+  // position: "fixed",
   bottom: 0,
   backgroundColor: theme.palette.background.paper,
   borderTop: `1px solid ${theme.palette.grey[200]}`,
   boxShadow: theme.shadows[4],
   paddingBottom: "env(safe-area-inset-bottom)",
-  height: "6%",
+  height: "7%",
   display: "flex",
   justifyContent: "space-evenly",
   alignItems: "center",

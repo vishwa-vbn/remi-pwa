@@ -47,7 +47,7 @@ class MainLayout extends React.Component {
   render() {
     const isSettingsRoute = window.location.pathname === "/settings";
     return (
-      <div className="min-h-screen h-[100vh] w-full flex flex-col bg-gray-100">
+      <div className=" h-[100%] w-full flex flex-col bg-gray-100">
         <VoiceAssistant />
         {!isSettingsRoute ? (
           <Header className="flex-none" style={{ height: "10%" }} />
