@@ -24,7 +24,7 @@ const SettingsView = ({
     <Box
       sx={{
         p: { xs: 2, sm: 2 },
-        minHeight: '100vh',
+        height: '100%',
         bgcolor: 'background.paper',
         fontSize: { xs: '12px', sm: '13px' },
       }}
