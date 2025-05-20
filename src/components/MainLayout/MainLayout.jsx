@@ -17,12 +17,12 @@ class MainLayout extends React.Component {
           <Header className="flex-none" style={{ height: "10%" }} />
         ) : null}
         <main
-          className="flex-grow w-full overflow-auto scrollbar-hide"
-          style={{ height: "80%" }}
+          className="w-full overflow-auto scrollbar-hide"
+          style={{ height: "84%" }}
         >
           {this.props.children}
         </main>
-        <BottomNavigation className="flex-none" style={{ height: "10%" }} />
+        <BottomNavigation className="flex-none"  />
       </div>
     );
   }
