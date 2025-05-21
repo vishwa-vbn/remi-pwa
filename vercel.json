@@ -1,4 +1,3 @@
-
 {
   "headers": [
     {
@@ -10,7 +9,7 @@
         },
         {
           "key": "Service-Worker-Allowed",
-          "value": "/"
+          "value": "/" 
         }
       ]
     },
@@ -19,7 +18,8 @@
       "headers": [
         {
           "key": "Service-Worker-Allowed",
-          "value": "/firebase-cloud-messaging-push-scope"
+          "value": "/" 
+                       
         }
       ]
     }
