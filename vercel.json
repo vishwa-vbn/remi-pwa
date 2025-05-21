@@ -1,4 +1,4 @@
-
+// vercel.json
 {
   "headers": [
     {
@@ -19,9 +19,15 @@
       "headers": [
         {
           "key": "Service-Worker-Allowed",
-          "value": "/firebase-messaging-sw/"
+          "value": "/firebase-cloud-messaging-push-scope"
         }
       ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/notify",
+      "destination": "/api/notify.js"
     }
   ]
 }
