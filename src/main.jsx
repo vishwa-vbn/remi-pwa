@@ -214,6 +214,31 @@ root.render(
   </React.StrictMode>
 );
 
+// // Register service workers
+// if ('serviceWorker' in navigator) {
+//   window.addEventListener('load', () => {
+//     // Register Workbox service worker
+//     navigator.serviceWorker
+//       .register('/sw.js', { scope: '/', updateViaCache: 'none' })
+//       .then((registration) => {
+//         console.log('Workbox Service Worker registered:', registration);
+//         registration.update();
+//       })
+//       .catch((error) => console.error('Workbox Service Worker registration failed:', error));
+
+//     // Register Firebase Messaging service worker
+//     navigator.serviceWorker
+//       .register('/firebase-messaging-sw.js') // Remove custom scope
+//       .then((registration) => {
+//         console.log('Firebase Messaging Service Worker registered:', registration);
+//         messaging.useServiceWorker(registration); // Ensure Firebase uses this registration
+//         registration.update();
+//       })
+//       .catch((error) => console.error('Firebase Messaging Service Worker registration failed:', error));
+//   });
+// }
+
+
 // Register service workers
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -228,11 +253,11 @@ if ('serviceWorker' in navigator) {
 
     // Register Firebase Messaging service worker
     navigator.serviceWorker
-      .register('/firebase-messaging-sw.js') // Remove custom scope
+      .register('/firebase-messaging-sw.js')
       .then((registration) => {
         console.log('Firebase Messaging Service Worker registered:', registration);
-        messaging.useServiceWorker(registration); // Ensure Firebase uses this registration
-        registration.update();
+        // REMOVE THIS LINE: messaging.useServiceWorker(registration);
+        registration.update(); // You might still want to call update if you want to force updates
       })
       .catch((error) => console.error('Firebase Messaging Service Worker registration failed:', error));
   });
