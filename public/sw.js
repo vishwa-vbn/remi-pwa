@@ -53,7 +53,7 @@
 //   );
 // });
 
-
+// src/sw.js
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js');
 
 workbox.setConfig({ debug: false });
@@ -80,39 +80,3 @@ workbox.routing.registerRoute(
     ],
   })
 );
-
-self.addEventListener('push', (event) => {
-  let payload;
-  try {
-    payload = event.data ? event.data.json() : { title: 'Task Reminder', body: 'No details provided.' };
-  } catch (error) {
-    console.error('Error parsing push event data:', error);
-    payload = { title: 'Task Reminder', body: 'Error retrieving task details.' };
-  }
-
-  event.waitUntil(
-    self.registration.showNotification(payload.title, {
-      body: payload.body,
-      icon: '/icon-192x192.png',
-      data: payload.data,
-    })
-  );
-});
-
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      const url = `/task/${event.notification.data.taskId}`;
-      for (const client of clientList) {
-        if (client.url.includes('/task/') && 'focus' in client) {
-          client.focus();
-          return;
-        }
-      }
-      if (clients.openWindow) {
-        return clients.openWindow(url);
-      }
-    })
-  );
-});

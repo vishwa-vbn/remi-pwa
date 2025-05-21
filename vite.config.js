@@ -104,7 +104,7 @@
 //   ]
 // })
 // vite.config.js
-
+// vite.config.js
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -119,7 +119,7 @@ export default defineConfig({
       devOptions: {
         enabled: true,
       },
-      includeAssets: ['icon-192x192.png', 'icon-512x512.png', 'vite.svg'],
+      includeAssets: ['icon-192x192.png', 'icon-512x512.png', 'vite.svg', 'firebase-messaging-sw.js'],
       manifest: {
         name: 'My PWA App',
         short_name: 'PWA App',
@@ -173,9 +173,9 @@ export default defineConfig({
   ],
   build: {
     outDir: 'dist',
-    sourcemap: false, // Disable sourcemaps in production for smaller builds
+    sourcemap: false,
   },
   server: {
-    host: '0.0.0.0', // Ensure Vercel compatibility
+    host: '0.0.0.0',
   },
 });

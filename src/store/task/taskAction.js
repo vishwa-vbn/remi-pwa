@@ -197,7 +197,7 @@
 //   }
 // };
 
-
+// src/taskAction.js
 import {
   collection,
   doc,
@@ -222,8 +222,6 @@ export const SET_NEW_TASK_COUNT = "SET_NEW_TASK_COUNT";
 export const SET_UPDATED_TASK_COUNT = "SET_UPDATED_TASK_COUNT";
 
 export const addTask = (task) => async (dispatch, getState) => {
-
-  console.log("add task", task)
   try {
     const state = getState();
     const currentUserId = state.auth.user?.id;
@@ -370,7 +368,6 @@ export const subscribeToTasks = () => (dispatch, getState) => {
       }
 
       const tasksCollection = collection(db, "tasks");
-      console.log("task collection",tasksCollection)
       const q = query(tasksCollection, where("userId", "==", currentUserId));
 
       const debouncedDispatch = debounce((tasks) => {

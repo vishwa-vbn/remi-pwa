@@ -1,3 +1,4 @@
+
 {
   "headers": [
     {
@@ -6,6 +7,19 @@
         {
           "key": "Permissions-Policy",
           "value": "microphone=(self)"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        }
+      ]
+    },
+    {
+      "source": "/firebase-messaging-sw.js",
+      "headers": [
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/firebase-messaging-sw/"
         }
       ]
     }
