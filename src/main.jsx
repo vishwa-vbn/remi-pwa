@@ -313,13 +313,13 @@ root.render(
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     // Register Workbox service worker
-    navigator.serviceWorker
-      .register('/sw.js', { scope: '/', updateViaCache: 'none' })
-      .then((registration) => {
-        console.log('Workbox Service Worker registered:', registration);
-        registration.update();
-      })
-      .catch((error) => console.error('Workbox Service Worker registration failed:', error));
+    // navigator.serviceWorker
+    //   .register('/sw.js', { scope: '/', updateViaCache: 'none' })
+    //   .then((registration) => {
+    //     console.log('Workbox Service Worker registered:', registration);
+    //     registration.update();
+    //   })
+    //   .catch((error) => console.error('Workbox Service Worker registration failed:', error));
 
     // Register Firebase Messaging service worker
     navigator.serviceWorker
