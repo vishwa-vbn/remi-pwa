@@ -347,7 +347,6 @@ import { NotificationSnackbarProvider, useNotification } from './common/Notifica
 
 export const { store, persistor } = configureStore();
 
-// Notification listener component
 const FirebaseForegroundNotificationHandler = () => {
   const { showNotification } = useNotification();
 
@@ -355,8 +354,9 @@ const FirebaseForegroundNotificationHandler = () => {
     const unsubscribe = onMessage(messaging, (payload) => {
       console.log('Foreground message received:', JSON.stringify(payload, null, 2));
 
-      const title = payload.notification?.title || 'Notification';
-      const body = payload.notification?.body;
+      // Prefer notification object but fallback to data
+      const title = payload.notification?.title || payload.data?.title || 'Notification';
+      const body = payload.notification?.body || payload.data?.body;
 
       if (body) {
         showNotification(`${title}: ${body}`, 'info');
@@ -370,6 +370,7 @@ const FirebaseForegroundNotificationHandler = () => {
 
   return null;
 };
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
