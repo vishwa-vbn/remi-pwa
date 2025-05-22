@@ -1,1 +1,2 @@
 export const GEMINI_KEY = "AIzaSyDjJnfGfkRl38TEyP6GJN1o4Mwn8kBbjI4";
+export const VITE_FIREBASE_VAPID_KEY ='BFNNCcPQj2f2DVpaz3eYvWFhCTjTd_1rgRXG--rivaaf58cUGjiLrAMUbZEfRS19D5391fJpRMnFwlbl2-9fufY';

@@ -6,8 +6,28 @@
         {
           "key": "Permissions-Policy",
           "value": "microphone=(self)"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/" 
         }
       ]
+    },
+    {
+      "source": "/firebase-messaging-sw.js",
+      "headers": [
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/" 
+                       
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/notify",
+      "destination": "/api/notify.js"
     }
   ]
 }
