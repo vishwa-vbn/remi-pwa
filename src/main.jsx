@@ -389,18 +389,18 @@ root.render(
   </React.StrictMode>
 );
 
-// // Register service workers
-// if ('serviceWorker' in navigator) {
-//   window.addEventListener('load', () => {
-//     navigator.serviceWorker
-//       .register('/firebase-messaging-sw.js')
-//       .then((registration) => {
-//         console.log('Firebase Messaging Service Worker registered:', registration);
-//         registration.update();
-//       })
-//       .catch((error) => console.error('Firebase Messaging Service Worker registration failed:', error));
-//   });
-// }
+// Register service workers
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/firebase-messaging-sw.js')
+      .then((registration) => {
+        console.log('Firebase Messaging Service Worker registered:', registration);
+        registration.update();
+      })
+      .catch((error) => console.error('Firebase Messaging Service Worker registration failed:', error));
+  });
+}
 
 // Request notification permissions
 if ('Notification' in window) {
