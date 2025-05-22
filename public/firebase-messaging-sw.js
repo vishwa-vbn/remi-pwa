@@ -61,17 +61,29 @@ try {
   firebase.initializeApp(firebaseConfig);
   const messaging = firebase.messaging();
 
-  messaging.onBackgroundMessage((payload) => {
-    console.log('Background message received:', payload);
-    const notificationTitle = payload.notification.title;
-    const notificationOptions = {
-      body: payload.notification.body,
-      icon: '/icon-192x192.png',
-      data: payload.data,
-    };
+  // messaging.onBackgroundMessage((payload) => {
+  //   console.log('Background message received:', payload);
+  //   const notificationTitle = payload.notification.title;
+  //   const notificationOptions = {
+  //     body: payload.notification.body,
+  //     icon: '/icon-192x192.png',
+  //     data: payload.data,
+  //   };
 
-    self.registration.showNotification(notificationTitle, notificationOptions);
-  });
+  //   self.registration.showNotification(notificationTitle, notificationOptions);
+  // });
+
+  messaging.onBackgroundMessage((payload) => {
+  const notificationTitle = payload.data.title;
+  const notificationOptions = {
+    body: payload.data.body,
+    icon: '/icon-192x192.png',
+    data: { taskId: payload.data.taskId },
+  };
+
+  self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
 
   self.addEventListener('notificationclick', (event) => {
     event.notification.close();
