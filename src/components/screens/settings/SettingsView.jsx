@@ -1,3 +1,141 @@
+// import React from 'react';
+// import { MdExitToApp } from 'react-icons/md';
+// import {
+//   Box,
+//   Typography,
+//   Divider,
+//   FormControl,
+//   Select,
+//   MenuItem,
+//   Button,
+//   Switch,
+//   Stack,
+// } from '@mui/material';
+
+// const SettingsView = ({
+//   selectedPeriod,
+//   setSelectedPeriod,
+//   notificationsEnabled,
+//   toggleNotifications,
+//   handleClearData,
+//   handleLogout,
+// }) => {
+//   return (
+//     <Box
+//       sx={{
+//         p: { xs: 2, sm: 2 },
+//         height: '100%',
+//         bgcolor: 'background.paper',
+//         fontSize: { xs: '12px', sm: '13px' },
+//       }}
+//     >
+//       <Typography
+//         variant="h6"
+//         fontWeight={600}
+//         gutterBottom
+//         sx={{ fontSize: { xs: '1.3rem', sm: '1.3rem' } }}
+//       >
+//         Settings
+//       </Typography>
+
+//       <Divider sx={{ mb: 2 }} />
+
+//       {/* Data Management */}
+//       <Typography
+//         variant="subtitle2"
+//         fontWeight={600}
+//         gutterBottom
+//         sx={{ fontSize: { xs: '0.85rem', sm: '0.9rem' } }}
+//       >
+//         Data Management
+//       </Typography>
+
+//       <Stack
+//         direction="row"
+//         justifyContent="space-between"
+//         alignItems="center"
+//         spacing={2}
+//         sx={{ mb: 1.5 }}
+//       >
+//         <Typography sx={{ fontSize: '0.8rem' }}>Clear Data Older Than</Typography>
+//         <FormControl size="small" sx={{ minWidth: 100 ,maxWidth:150}}>
+//           <Select
+//             value={selectedPeriod}
+//             onChange={(e) => setSelectedPeriod(e.target.value)}
+//             sx={{ fontSize: '0.8rem', height: 32 }}
+//           >
+//             <MenuItem value="week">Last Week</MenuItem>
+//             <MenuItem value="month">Last Month</MenuItem>
+//             <MenuItem value="year">Last Year</MenuItem>
+//           </Select>
+//         </FormControl>
+//       </Stack>
+
+//       <Button
+//         variant="outlined"
+//         color="primary"
+//         onClick={handleClearData}
+//         sx={{
+//           fontSize: '0.75rem',
+//           px: 2,
+//           py: 0.75,
+//           mb: 3,
+//           textTransform: 'none',
+//           minWidth: 'fit-content',
+//         }}
+//       >
+//         Clear Data
+//       </Button>
+
+//       <Divider sx={{ mb: 2 }} />
+
+//       {/* Notifications */}
+//       <Typography
+//         variant="subtitle2"
+//         fontWeight={600}
+//         gutterBottom
+//         sx={{ fontSize: { xs: '0.85rem', sm: '0.9rem' } }}
+//       >
+//         Notifications
+//       </Typography>
+
+//       <Stack
+//         direction="row"
+//         justifyContent="space-between"
+//         alignItems="center"
+//         sx={{ mb: 2 }}
+//       >
+//         <Typography sx={{ fontSize: '0.8rem' }}>Enable Notifications</Typography>
+//         <Switch
+//           checked={notificationsEnabled}
+//           onChange={(e) => toggleNotifications(e.target.checked)}
+//           color="primary"
+//           size="small"
+//         />
+//       </Stack>
+
+//       <Divider sx={{ my: 2 }} />
+
+//       {/* Logout */}
+//       <Button
+//         variant="text"
+//         onClick={handleLogout}
+//         startIcon={<MdExitToApp size={18} />}
+//         sx={{
+//           fontSize: '0.8rem',
+//           fontWeight: 600,
+//           textTransform: 'none',
+//           color: 'text.primary',
+//         }}
+//       >
+//         Logout
+//       </Button>
+//     </Box>
+//   );
+// };
+
+// export default SettingsView;
+
 import React from 'react';
 import { MdExitToApp } from 'react-icons/md';
 import {
@@ -10,6 +148,9 @@ import {
   Button,
   Switch,
   Stack,
+  CircularProgress,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 
 const SettingsView = ({
@@ -19,50 +160,57 @@ const SettingsView = ({
   toggleNotifications,
   handleClearData,
   handleLogout,
+  isLoading,
+  feedback,
+  setFeedback,
 }) => {
   return (
     <Box
       sx={{
-        p: { xs: 2, sm: 2 },
+        p: { xs: 2, sm: 3 },
         height: '100%',
         bgcolor: 'background.paper',
-        fontSize: { xs: '12px', sm: '13px' },
+        fontSize: { xs: '0.875rem', sm: '0.9375rem' },
+        mx: 'auto',
       }}
     >
       <Typography
         variant="h6"
         fontWeight={600}
         gutterBottom
-        sx={{ fontSize: { xs: '1.3rem', sm: '1.3rem' } }}
+        sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}
       >
         Settings
       </Typography>
 
-      <Divider sx={{ mb: 2 }} />
+      <Divider sx={{ my: 2 }} />
 
       {/* Data Management */}
       <Typography
         variant="subtitle2"
         fontWeight={600}
         gutterBottom
-        sx={{ fontSize: { xs: '0.85rem', sm: '0.9rem' } }}
+        sx={{ fontSize: { xs: '0.875rem', sm: '0.9375rem' } }}
       >
         Data Management
       </Typography>
 
       <Stack
-        direction="row"
+        direction={{ xs: 'row', sm: 'row' }}
         justifyContent="space-between"
-        alignItems="center"
+        alignItems={{ xs: 'flex-start', sm: 'center' }}
         spacing={2}
-        sx={{ mb: 1.5 }}
+        sx={{ mb: 2 }}
       >
-        <Typography sx={{ fontSize: '0.8rem' }}>Clear Data Older Than</Typography>
-        <FormControl size="small" sx={{ minWidth: 100 ,maxWidth:150}}>
+        <Typography sx={{ fontSize: { xs: '0.8125rem', sm: '0.875rem' } }}>
+          Clear Data Older Than
+        </Typography>
+        <FormControl size="small" sx={{ minWidth: 120, maxWidth: 150 }}>
           <Select
             value={selectedPeriod}
             onChange={(e) => setSelectedPeriod(e.target.value)}
-            sx={{ fontSize: '0.8rem', height: 32 }}
+            sx={{ fontSize: '0.875rem', height: 36 }}
+            disabled={isLoading}
           >
             <MenuItem value="week">Last Week</MenuItem>
             <MenuItem value="month">Last Month</MenuItem>
@@ -75,42 +223,55 @@ const SettingsView = ({
         variant="outlined"
         color="primary"
         onClick={handleClearData}
+        disabled={isLoading}
+        startIcon={isLoading ? <CircularProgress size={20} /> : null}
         sx={{
-          fontSize: '0.75rem',
-          px: 2,
-          py: 0.75,
+          fontSize: '0.8125rem',
+          px: 3,
+          py: 1,
           mb: 3,
           textTransform: 'none',
           minWidth: 'fit-content',
+          '&:hover': {
+            backgroundColor: '#f3f4f6',
+            borderColor: '#cbd5e1',
+          },
+          '&:disabled': {
+            backgroundColor: '#f9fafb',
+            color: '#9ca3af',
+          },
         }}
       >
-        Clear Data
+        {isLoading ? 'Clearing...' : 'Clear Data'}
       </Button>
 
-      <Divider sx={{ mb: 2 }} />
+      <Divider sx={{ my: 2 }} />
 
       {/* Notifications */}
       <Typography
         variant="subtitle2"
         fontWeight={600}
         gutterBottom
-        sx={{ fontSize: { xs: '0.85rem', sm: '0.9rem' } }}
+        sx={{ fontSize: { xs: '0.875rem', sm: '0.9375rem' } }}
       >
         Notifications
       </Typography>
 
       <Stack
-        direction="row"
+        direction={{ xs: 'column', sm: 'row' }}
         justifyContent="space-between"
-        alignItems="center"
+        alignItems={{ xs: 'flex-start', sm: 'center' }}
         sx={{ mb: 2 }}
       >
-        <Typography sx={{ fontSize: '0.8rem' }}>Enable Notifications</Typography>
+        <Typography sx={{ fontSize: { xs: '0.8125rem', sm: '0.875rem' } }}>
+          Enable Notifications
+        </Typography>
         <Switch
           checked={notificationsEnabled}
           onChange={(e) => toggleNotifications(e.target.checked)}
           color="primary"
           size="small"
+          disabled={isLoading}
         />
       </Stack>
 
@@ -121,15 +282,36 @@ const SettingsView = ({
         variant="text"
         onClick={handleLogout}
         startIcon={<MdExitToApp size={18} />}
+        disabled={isLoading}
         sx={{
-          fontSize: '0.8rem',
+          fontSize: '0.8125rem',
           fontWeight: 600,
           textTransform: 'none',
           color: 'text.primary',
+          '&:hover': {
+            backgroundColor: '#f3f4f6',
+          },
+          '&:disabled': {
+            color: '#9ca3af',
+          },
         }}
       >
         Logout
       </Button>
+
+      <Snackbar
+        open={feedback.open}
+        autoHideDuration={6000}
+        onClose={() => setFeedback({ ...feedback, open: false })}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          severity={feedback.severity}
+          onClose={() => setFeedback({ ...feedback, open: false })}
+        >
+          {feedback.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
