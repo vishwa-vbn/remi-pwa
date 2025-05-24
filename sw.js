@@ -66,7 +66,6 @@ workbox.precaching.precacheAndRoute([
   { url: '/index.html', revision: '0d48aa279ef1b9ff1d55911e60820a94' },
   { url: '/assets/index-BjJbPigV.css', revision: null },
   { url: '/assets/index-CLFjXins.js', revision: null },
-  { url: '/vite.svg', revision: '8e3a10e157f75ada21ab742c022d5430' },
   { url: '/manifest.webmanifest', revision: '74df59e8765999e75bb5deccb2c2fb68' },
 ]);
 

@@ -119,7 +119,7 @@ export default defineConfig({
       devOptions: {
         enabled: true,
       },
-      includeAssets: ['icon-192x192.png', 'icon-512x512.png', 'vite.svg', 'firebase-messaging-sw.js'],
+      includeAssets: ['icon-192x192.png', 'icon-512x512.png', 'firebase-messaging-sw.js'],
       manifest: {
         name: 'My PWA App',
         short_name: 'PWA App',
