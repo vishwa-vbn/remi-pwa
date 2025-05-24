@@ -495,7 +495,7 @@ const isLightColor = (color) => {
 const AdsterraAd = () => {
   const bannerRef = useRef(null);
   const atOptions = {
-    key: 'xxxx', // Replace with actual Adsterra key
+    key: '0b4c6c4d034bbaa335270f3aa5e15f04', // Replace with actual Adsterra key
     format: 'iframe',
     height: 50,
     width: 320,
