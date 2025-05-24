@@ -468,7 +468,6 @@
 //     prevProps.onDelete === nextProps.onDelete
 //   );
 // });
-
 import React, {
   useState,
   useCallback,
@@ -494,26 +493,37 @@ const isLightColor = (color) => {
 };
 
 const AdsterraAd = () => {
-  const adScript = `
-    <script type="text/javascript">
-      atOptions = {
-        'key' : '0b4c6c4d034bbaa335270f3aa5e15f04',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
-        'params' : {}
-      };
-    </script>
-    <script type="text/javascript" src="//www.highperformanceformat.com/0b4c6c4d034bbaa335270f3aa5e15f04/invoke.js"></script>
-  `;
+  const bannerRef = useRef(null);
+  const atOptions = {
+    key: 'xxxx', // Replace with actual Adsterra key
+    format: 'iframe',
+    height: 50,
+    width: 320,
+    params: {},
+  };
+
+  useEffect(() => {
+    if (bannerRef.current && !bannerRef.current.firstChild) {
+      const conf = document.createElement('script');
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = `//www.highperformancedformats.com/${atOptions.key}/invoke.js`;
+      conf.innerHTML = `atOptions = ${JSON.stringify(atOptions)}`;
+
+      bannerRef.current.append(conf);
+      bannerRef.current.append(script);
+    }
+  }, []);
+
   return (
     <div
+      ref={bannerRef}
       style={{
         width: "320px",
         height: "50px",
         margin: "8px auto",
       }}
-      dangerouslySetInnerHTML={{ __html: adScript }}
+      className="mx-2 my-5 border border-gray-200 justify-center items-center text-center"
     />
   );
 };
@@ -605,49 +615,8 @@ const CustomTimeline = ({
     const calculateLineHeights = () => {
       const heights = {};
       sortedTasksWithAds.forEach((item, index) => {
-        if (index === sortedTasksWithAds.length - 1) {
-          heights[item.id] = 0;
-          return;
-        }
-        const currentDot = dotRefs.current[item.id];
-        const nextItem = sortedTasksWithAds[index + 1];
-        // Only calculate height to next task, skipping ads
-        const nextTaskIndex = sortedTasksWithAds.findIndex(
-          (t, i) => i > index && !t.isAd
-        );
-        const nextDot =
-          nextTaskIndex !== -1
-            ? dotRefs.current[sortedTasksWithAds[nextTaskIndex]?.id]
-            : null;
-        if (currentDot && nextDot && !nextItem.isAd) {
-          const currentDotRect = currentDot.getBoundingClientRect();
-          const nextDotRect = nextDot.getBoundingClientRect();
-          const currentDotCenter =
-            currentDotRect.top + currentDotRect.height / 2;
-          const nextDotCenter = nextDotRect.top + nextDotRect.height / 2;
-          const distance = Math.max(nextDotCenter - currentDotCenter, 0);
-          heights[item.id] = distance;
-        } else {
-          heights[item.id] = expandedTasks[item.id] ? 180 : 80;
-        }
-      });
-      setLineHeights(heights);
-    };
-
-    calculateLineHeights();
-    const observer = new ResizeObserver(calculateLineHeights);
-    if (scrollContainerRef.current) {
-      observer.observe(scrollContainerRef.current);
-    }
-    return () => observer.disconnect();
-  }, [sortedTasksWithAds, expandedTasks]);
-
-  useEffect(() => {
-    const calculateLineHeights = () => {
-      const heights = {};
-      sortedTasksWithAds.forEach((item, index) => {
         if (item.isAd) {
-          heights[item.id] = 70; // Adjusted height for Adsterra ad (50px ad + margins)
+          heights[item.id] = 70; // Adjusted height for Adsterra ad
           return;
         }
         if (index === sortedTasksWithAds.length - 1) {
